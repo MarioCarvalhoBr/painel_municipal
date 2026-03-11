@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pydeck as pdk
+import plotly.express as px
 import json
 from database.connection import get_connection
 from pathlib import Path
@@ -73,13 +74,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------------
-# Cabeçalho customizado (sem linha separadora)
+# Cabeçalho customizado
 # -------------------------------------------------------------------
 logo_path = Path(__file__).parent / "assets" / "AdaptaLogo.png"
+
 
 def image_to_base64(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
+
 
 if logo_path.exists():
     logo_base64 = image_to_base64(logo_path)
@@ -100,20 +103,20 @@ if logo_path.exists():
 else:
     st.markdown("<h1 style='margin-top: -1rem;'>Painel Municipal</h1>", unsafe_allow_html=True)
 
+
 # -------------------------------------------------------------------
 # Funções de carregamento de dados com cache
 # -------------------------------------------------------------------
 @st.cache_data(ttl=600)
 def load_municipios():
     """
-    Carrega a lista de municípios: id e nome formatado como "nome - UF"
-    (sem filtro de ano)
+    Carrega a lista de municípios: id, state e nome formatado como "nome - UF"
     """
     query = """
-    SELECT id, CONCAT(name, ' - ', state) AS display
-    FROM adaptabrasil.county
-    ORDER BY display;
-    """
+            SELECT id, state, CONCAT(name, ' - ', state) AS display
+            FROM adaptabrasil.county
+            ORDER BY display; \
+            """
     try:
         conn = get_connection()
         df = pd.read_sql(query, conn)
@@ -123,10 +126,11 @@ def load_municipios():
         st.error(f"Erro ao carregar municípios: {e}")
         return pd.DataFrame()
 
+
 @st.cache_data(ttl=600)
 def load_anos_para_cidade(cidade_id):
     """
-    Carrega a lista de anos disponíveis para a cidade selecionada.
+    Retorna lista de anos (valores originais, podendo conter espaços)
     """
     query = f"""
     SELECT DISTINCT "year"
@@ -143,11 +147,27 @@ def load_anos_para_cidade(cidade_id):
         st.error(f"Erro ao carregar anos para a cidade: {e}")
         return []
 
+
+@st.cache_data(ttl=600)
+def load_setores_para_cidade_ano(cidade_id, ano):
+    query = f"""
+    SELECT DISTINCT sep
+    FROM adaptabrasil.mv_adapta_cidades
+    WHERE county_id = {cidade_id} AND "year" = '{ano}'
+    ORDER BY sep;
+    """
+    try:
+        conn = get_connection()
+        df = pd.read_sql(query, conn)
+        conn.close()
+        return df["sep"].tolist()
+    except Exception as e:
+        st.error(f"Erro ao carregar setores: {e}")
+        return []
+
+
 @st.cache_data(ttl=600)
 def load_city_geojson(cidade_id):
-    """
-    Carrega a geometria da cidade e seu centroide.
-    """
     query = f"""
     SELECT 
         id, 
@@ -183,17 +203,27 @@ def load_city_geojson(cidade_id):
         st.error(f"Erro ao carregar geometria da cidade: {e}")
         return [], None, None
 
+
 @st.cache_data(ttl=600)
-def load_county_data_view(cidade_id, ano):
+def load_county_data_view(cidade_id, ano, sep=None):
     """
-    Carrega os dados da view materializada para o município e ano selecionados.
+    Carrega os dados da view para a cidade, ano e setor (opcional).
+    Inclui os campos label e order.
     """
-    query = f"""
-    SELECT sep, imageurl, color, value
-    FROM adaptabrasil.mv_adapta_cidades
-    WHERE county_id = {cidade_id} AND "year" = '{ano}'
-    ORDER BY value DESC;
-    """
+    if sep and sep != "Selecione o Setor Estratégico desejado":
+        query = f"""
+        SELECT sep, imageurl, color, value, label, "order"
+        FROM adaptabrasil.mv_adapta_cidades
+        WHERE county_id = {cidade_id} AND "year" = '{ano}' AND sep = '{sep}'
+        ORDER BY value DESC;
+        """
+    else:
+        query = f"""
+        SELECT sep, imageurl, color, value, label, "order"
+        FROM adaptabrasil.mv_adapta_cidades
+        WHERE county_id = {cidade_id} AND "year" = '{ano}'
+        ORDER BY value DESC;
+        """
     try:
         conn = get_connection()
         df = pd.read_sql(query, conn)
@@ -203,19 +233,50 @@ def load_county_data_view(cidade_id, ano):
         st.error(f"Erro ao carregar dados da view: {e}")
         return pd.DataFrame()
 
+
+@st.cache_data(ttl=600)
+def load_pie_data(state, year, sep):
+    """
+    Retorna DataFrame com color, label, order e count de municípios distintos no estado,
+    para o ano e setor especificados. Agrupado por color, label e order.
+    """
+    query = f"""
+    SELECT color, label, MIN("order") as ord, COUNT(DISTINCT county_id) as count
+    FROM adaptabrasil.mv_adapta_cidades
+    WHERE state = '{state}' AND "year" = '{year}' AND sep = '{sep}'
+    GROUP BY color, label, "order"
+    ORDER BY "order";
+    """
+    try:
+        conn = get_connection()
+        df = pd.read_sql(query, conn)
+        conn.close()
+        return df
+    except Exception as e:
+        st.error(f"Erro ao carregar dados do gráfico: {e}")
+        return pd.DataFrame()
+
+
 # -------------------------------------------------------------------
 # Carregar lista de municípios (inicial)
 # -------------------------------------------------------------------
 with st.spinner("Carregando municípios..."):
     df_municipios = load_municipios()
 
+# Inicializar session_state se necessário
+if 'cidade_id' not in st.session_state:
+    st.session_state['cidade_id'] = None
+    st.session_state['estado_cidade'] = None
+    st.session_state['selected_ano'] = None
+    st.session_state['selected_sep'] = None
+
 # -------------------------------------------------------------------
-# Layout em duas colunas (filtros ficam na coluna esquerda, acima do mapa)
+# Layout em duas colunas
 # -------------------------------------------------------------------
 col_esquerda, col_direita = st.columns([1, 1], gap="large")
 
 with col_esquerda:
-    # Seleção da cidade (primeiro)
+    # Seleção da cidade
     if not df_municipios.empty:
         opcoes_cidades = df_municipios['display'].tolist()
         selected_display = st.selectbox(
@@ -230,35 +291,64 @@ with col_esquerda:
         st.warning("Lista de municípios não disponível.")
         selected_display = None
 
-    # Se uma cidade foi selecionada, carregar os anos correspondentes
+    # Se cidade selecionada, atualizar session_state e carregar anos
     if selected_display:
-        cidade_id = df_municipios[df_municipios['display'] == selected_display]['id'].values[0]
-        with st.spinner("Carregando anos disponíveis..."):
-            anos_disponiveis = load_anos_para_cidade(cidade_id)
+        cidade_row = df_municipios[df_municipios['display'] == selected_display].iloc[0]
+        st.session_state['cidade_id'] = cidade_row['id']
+        st.session_state['estado_cidade'] = cidade_row['state']
 
-        # Seleção do ano (agora dependente da cidade)
+        with st.spinner("Carregando anos disponíveis..."):
+            anos_disponiveis = load_anos_para_cidade(st.session_state['cidade_id'])
+
         if anos_disponiveis:
+            # Define índice padrão para " Presente" (se existir)
             default_index = 0
             if " Presente" in anos_disponiveis:
                 default_index = anos_disponiveis.index(" Presente")
+            # Usa format_func para remover espaços na exibição
             selected_ano = st.selectbox(
                 label="Selecione o ano",
                 options=anos_disponiveis,
                 index=default_index,
+                format_func=lambda x: x.strip(),  # Remove espaços ao exibir
                 label_visibility="collapsed",
                 placeholder="Escolha um ano",
                 key="ano_select"
             )
+            st.session_state['selected_ano'] = selected_ano
         else:
             st.warning("Nenhum ano disponível para esta cidade.")
-            selected_ano = None
+            st.session_state['selected_ano'] = None
     else:
-        selected_ano = None
+        st.session_state['cidade_id'] = None
+        st.session_state['estado_cidade'] = None
+        st.session_state['selected_ano'] = None
 
-    # Mapa da cidade (se houver cidade e ano selecionados)
-    if selected_display and selected_ano:
+    # Se cidade e ano selecionados, carregar setores
+    if st.session_state['cidade_id'] and st.session_state['selected_ano']:
+        with st.spinner("Carregando setores disponíveis..."):
+            setores_disponiveis = load_setores_para_cidade_ano(
+                st.session_state['cidade_id'],
+                st.session_state['selected_ano']
+            )
+
+        opcoes_setores = ["Selecione o Setor Estratégico desejado"] + setores_disponiveis
+        selected_sep = st.selectbox(
+            label="Selecione o setor",
+            options=opcoes_setores,
+            index=0,
+            label_visibility="collapsed",
+            placeholder="Escolha um setor",
+            key="sep_select"
+        )
+        st.session_state['selected_sep'] = selected_sep
+    else:
+        st.session_state['selected_sep'] = None
+
+    # Mapa da cidade
+    if st.session_state['cidade_id'] and st.session_state['selected_ano']:
         with st.spinner("Carregando mapa da cidade..."):
-            cidade_features, lat, lon = load_city_geojson(cidade_id)
+            cidade_features, lat, lon = load_city_geojson(st.session_state['cidade_id'])
 
         if cidade_features and lat is not None and lon is not None:
             geojson_layer = pdk.Layer(
@@ -297,14 +387,18 @@ with col_esquerda:
             st.pydeck_chart(deck, width='stretch', height=400)
         else:
             st.warning("Geometria da cidade não disponível.")
-    elif selected_display:
+    elif st.session_state['cidade_id']:
         st.info("Selecione um ano para visualizar o mapa e os dados.")
 
 with col_direita:
-    if selected_display and selected_ano:
-        cidade_id = df_municipios[df_municipios['display'] == selected_display]['id'].values[0]
+    if st.session_state['cidade_id'] and st.session_state['selected_ano']:
+        # Tabela de indicadores
         with st.spinner("Carregando indicadores..."):
-            df_dados = load_county_data_view(cidade_id, selected_ano)
+            df_dados = load_county_data_view(
+                st.session_state['cidade_id'],
+                st.session_state['selected_ano'],
+                st.session_state['selected_sep']
+            )
 
         if not df_dados.empty:
             html = """
@@ -313,19 +407,49 @@ with col_direita:
             """
             for _, row in df_dados.iterrows():
                 html += "<tr style='border: 0;'>"
+                # Ícone
                 html += f"<td style='padding: 5px 15px 5px 5px; text-align: center; border: none;' class='tooltip-cell' data-tooltip='{row['sep']}'><img src='{row['imageurl']}' width='32' height='32'></td>"
+                # Valor com cor de fundo
                 html += f"<td style='padding: 5px 5px 5px 10px; text-align: left; font-family: \"Courier New\", monospace; font-weight: bold; background-color: {row['color']}; border-radius: 4px; line-height: 32px; border: none;' class='tooltip-cell' data-tooltip='{row['sep']}'>{row['value']:.3f}</td>"
+                # Label
+                html += f"<td style='padding: 5px 10px 5px 15px; text-align: left; font-family: sans-serif; border: none;'>{row['label']}</td>"
                 html += "</tr>"
             html += """
                 </table>
             </div>
             """
             st.markdown(html, unsafe_allow_html=True)
+
+            # Gráfico de pizza (se um setor específico foi selecionado)
+            if (st.session_state['selected_sep'] and
+                    st.session_state['selected_sep'] != "Selecione o Setor Estratégico desejado"):
+                with st.spinner("Carregando gráfico..."):
+                    df_pie = load_pie_data(
+                        st.session_state['estado_cidade'],
+                        st.session_state['selected_ano'],
+                        st.session_state['selected_sep']
+                    )
+                if not df_pie.empty:
+                    # Mapear cada cor para ela mesma (para colorir as fatias)
+                    color_map = {color: color for color in df_pie['color'].unique()}
+                    fig = px.pie(
+                        df_pie,
+                        values='count',
+                        names='label',
+                        title=f"Distribuição de Municípios no Estado ({st.session_state['estado_cidade']})",
+                        color='color',
+                        color_discrete_map=color_map,
+                        category_orders={"label": df_pie['label'].tolist()}
+                    )
+                    fig.update_traces(textposition='inside', textinfo='percent+label')
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Nenhum dado para o gráfico de pizza.")
         else:
-            st.info("Nenhum dado disponível para este município no ano selecionado.")
+            st.info("Nenhum dado disponível para este município no ano e setor selecionados.")
     else:
         st.info("Selecione um município e um ano para visualizar os indicadores.")
 
-# Rodapé (sem linha extra, apenas a caption)
+# Rodapé
 st.markdown("---")
 st.caption("Fonte: adaptabrasil")
