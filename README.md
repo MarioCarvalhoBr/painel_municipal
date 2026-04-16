@@ -66,11 +66,12 @@ Ensure you have the following tools installed and configured in your development
    cd painel_municipal
    ```
 
-2. **Virtual Environment:**
+2. **Virtual Environment (Only for Backend):**
    Create and activate a local virtual environment to isolate the project's dependencies:
    ```bash
       # 1. Using Python's built-in venv module:
       ## 1.1 Create and activate a virtual environment (optional but recommended)
+      cd backend
       python -m venv .venv
 
       ## 1.2 Activate the virtual environment
@@ -81,6 +82,7 @@ Ensure you have the following tools installed and configured in your development
       
       # 2. Using Poetry's built-in environment management:
       ## 2.1 Create and activate a Poetry-managed virtual environment
+      cd backend
       eval $(poetry env activate)
 
       # 3. Install Poetry (if needed)
