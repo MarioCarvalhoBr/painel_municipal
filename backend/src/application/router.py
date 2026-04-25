@@ -1,5 +1,10 @@
 # backend/src/application/router.py
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Request
+from typing import List
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+
 from typing import List
 from .dependencies import get_county_repository, get_pdf_service
 from ..domain.interfaces import CountyRepositoryInterface, PdfServiceInterface
@@ -7,6 +12,9 @@ from ..domain.entities import County
 from ..core.constants import ErrorKeys
 
 router = APIRouter(prefix="/api/v1")
+
+# Initialize rate limiter with remote address as key function
+limiter = Limiter(key_func=get_remote_address)
 
 @router.get("/health")
 async def health_check():
@@ -21,8 +29,11 @@ async def list_counties(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Rate Limit Decorator: Max 2 PDFs per minute per IP!
 @router.get("/reports/pdf/{county_id}")
+@limiter.limit("2/minute")
 async def download_report_pdf(
+    request: Request,
     county_id: int,
     repo: CountyRepositoryInterface = Depends(get_county_repository),
     pdf_service: PdfServiceInterface = Depends(get_pdf_service)
