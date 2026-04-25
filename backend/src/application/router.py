@@ -39,6 +39,7 @@ async def download_report_pdf(
     pdf_service: PdfServiceInterface = Depends(get_pdf_service)
 ):
     adaptation_data = await repo.get_data_by_county(county_id)
+    county_data = await repo.get_county_by_id(county_id)
     
     # Guard clause: No data found
     if not adaptation_data:
@@ -48,6 +49,8 @@ async def download_report_pdf(
     context = {
         "county_name": first_record.county,
         "state": first_record.state,
+        "region": first_record.region,
+        "population": county_data.population if hasattr(county_data, 'population') else "N/A",
         "data": adaptation_data
     }
 
