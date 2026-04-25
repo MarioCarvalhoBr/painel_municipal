@@ -21,6 +21,8 @@ services:
     restart: always
     depends_on:
       - db
+    ports:
+      - "${BACKEND_SECRET_PORT}:8000"
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
@@ -36,6 +38,8 @@ services:
     restart: always
     depends_on:
       - backend
+    environment:
+      - FRONTEND_SECRET_PORT=${FRONTEND_SECRET_PORT}
     ports:
       - "${FRONTEND_SECRET_PORT}:80"
 

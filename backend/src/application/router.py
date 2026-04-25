@@ -8,6 +8,10 @@ from ..core.constants import ErrorKeys
 
 router = APIRouter(prefix="/api/v1")
 
+@router.get("/health")
+async def health_check():
+    return {"status": "ok", "message": "Service is running"}
+
 @router.get("/counties", response_model=List[County])
 async def list_counties(
     repo: CountyRepositoryInterface = Depends(get_county_repository)
