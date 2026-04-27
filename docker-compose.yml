@@ -32,7 +32,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - PDF_ENGINE=${PDF_ENGINE}
-    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload --proxy-headers --forwarded-allow-ips="*"
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
     build:

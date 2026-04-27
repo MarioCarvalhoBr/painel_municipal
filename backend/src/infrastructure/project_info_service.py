@@ -1,5 +1,4 @@
 import tomllib
-from pathlib import Path
 
 from ..core.config import settings
 from ..domain.entities import ProjectInfo

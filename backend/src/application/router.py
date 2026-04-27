@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from ..core.config import settings
 from ..core.constants import ErrorKeys
 from ..domain.entities import County
 from ..domain.interfaces import CountyRepositoryInterface, PdfServiceInterface, ProjectInfoServiceInterface

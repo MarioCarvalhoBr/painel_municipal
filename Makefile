@@ -1,6 +1,6 @@
 # Makefile for Docker management
 
-.PHONY: help build run stop restart logs logs-backend logs-frontend ps shell-backend shell-frontend shell-db
+.PHONY: help build run start stop restart down logs logs-backend logs-frontend ps shell-backend shell-frontend shell-db
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
