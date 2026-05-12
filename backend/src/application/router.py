@@ -15,19 +15,37 @@ router = APIRouter(prefix="/api/v1")
 # Initialize rate limiter with remote address as key function
 limiter = Limiter(key_func=get_remote_address)
 
+@router.get("/database/status")
+async def get_database_status(
+    county_repo: CountyRepositoryInterface = Depends(get_county_repository)
+):
+    try:
+        status = await county_repo.get_status_database()
+        return {"database_status": "connected" if status else "disconnected"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/health")
 async def health_check(
-    project_info_service: ProjectInfoServiceInterface = Depends(get_project_info_service)
+    project_info_service: ProjectInfoServiceInterface = Depends(get_project_info_service),
+    county_repo: CountyRepositoryInterface = Depends(get_county_repository)
 ):
-    health_msg =  {"status": "ok", "message": "Service is running"}
-    project_info = {}
+    health_msg =  {"backend":{"status": "ok", "message": "Service is running"}}
     try:
         info_entity = project_info_service.get_project_info()
-        project_info = {"project": info_entity.model_dump()}
+        health_msg.update({"project": info_entity.model_dump()})
     except Exception as e:
         print(f"Error reading project info: {e}")
         
-    return {**health_msg, **project_info}
+    try:
+        status = await county_repo.get_status_database()
+        status_database = {"database_status": "connected" if status else "disconnected"}
+        health_msg.update(status_database)
+    except Exception as e:
+        print(f"Error checking database status: {e}")
+    
+    
+    return {**health_msg}
 
 @router.get("/counties", response_model=List[County])
 async def list_counties(
@@ -108,17 +126,5 @@ async def get_main_risks(
 ):
     try:
         return await adapta_data_repo.get_main_risks_by_county_id(county_id)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
-    
-# Teste database connection get_status_database from CountyRepository
-@router.get("/database/status")
-async def get_database_status(
-    county_repo: CountyRepositoryInterface = Depends(get_county_repository)
-):
-    try:
-        status = await county_repo.get_status_database()
-        return {"database_status": "connected" if status else "disconnected"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
