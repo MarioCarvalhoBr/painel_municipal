@@ -18,3 +18,13 @@ class PostgresDatabase(DatabaseInterface):
         except Exception as e:
             # In a real scenario, log the exception 'e' here
             raise Exception(ErrorKeys.DB_CONNECTION_FAILED.value)
+        
+    # Teste database connection
+    async def test_connection(self) -> bool:
+        try:
+            conn = await asyncpg.connect(self.dsn)
+            await conn.close()
+            return True
+        except Exception as e:
+            # In a real scenario, log the exception 'e' here
+            raise Exception(ErrorKeys.DB_CONNECTION_FAILED.value)

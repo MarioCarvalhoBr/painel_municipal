@@ -7,6 +7,9 @@ class DatabaseInterface(ABC):
     @abstractmethod
     async def fetch_all(self, query: str, *args) -> List[dict]:
         pass
+    @abstractmethod
+    async def test_connection(self) -> bool:
+        pass
 
 class CountyStatisticsRepositoryInterface(ABC):
     @abstractmethod

@@ -110,3 +110,15 @@ async def get_main_risks(
         return await adapta_data_repo.get_main_risks_by_county_id(county_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+# Teste database connection get_status_database from CountyRepository
+@router.get("/database/status")
+async def get_database_status(
+    county_repo: CountyRepositoryInterface = Depends(get_county_repository)
+):
+    try:
+        status = await county_repo.get_status_database()
+        return {"database_status": "connected" if status else "disconnected"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
