@@ -32,6 +32,9 @@ async def health_check(
     county_repo: CountyRepositoryInterface = Depends(get_county_repository)
 ):
     health_msg =  {"backend":{"status": "ok", "message": "Service is running"}}
+    health_msg["pdf_engine"] = settings.pdf_engine
+    health_msg["pages_dir"] = settings.pages_dir
+    
     try:
         info_entity = project_info_service.get_project_info()
         health_msg.update({"project": info_entity.model_dump()})
@@ -94,11 +97,12 @@ async def download_report_pdf(
         "county_statistic_record": county_statistic_record,
         "main_factors_record": main_factors_record,
         "risks_record": risks_record,
-        "pdf_engine": settings.pdf_engine
+        "pdf_engine": settings.pdf_engine,
     }
 
     try:
-        pdf_bytes = await pdf_service.generate_pdf("report_template.html", context)
+        # Gera PDFs de cada página separadamente e faz merge
+        pdf_bytes = await pdf_service.generate_pdf_merged(context)
     except Exception as e:
         print(f"Error generating PDF: {e}")
         raise HTTPException(status_code=500, detail=str(e))

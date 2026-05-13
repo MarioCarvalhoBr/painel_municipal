@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="{{ base_url }}">
+  <link rel="stylesheet" href="css/style.css">
+
+  <title>Página 2</title>
+</head>
+
+<body>
+
+  <p class="h3" style="margin-left: 30px;">Página 2</p>
+
+  <div class="parent">
+    <div class="div1">
+      <h1>Riscos</h1>
+      <ul class="risks-container">
+        {% for item in risks_record %}
+        <li class="risk-row">
+          <div class="risk-info">
+            {% if item.imageurl %}
+            <img src="{{ item.imageurl }}" alt="Ícone de {{ item.risk }}" class="risk-icon">
+            {% endif %}
+            <span class="risk-text">{{ item.risk }}</span>
+          </div>
+
+          <div class="risk-value-box" style="background-color: {{ item.color }};">
+            {{ item.value }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+
+    </div>
+    <div class="div2">
+      <h1>Principais fatores</h1>
+      <ul class="factors-container">
+        {% for factor in main_factors_record %}
+        <li class="factor-row">
+          {% if factor.imageurl %}
+          <img src="{{ factor.imageurl }}" alt="Ícone de {{ factor.sep }}" class="factor-icon">
+          {% endif %}
+          <span class="factor-text">{{ factor.sep }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="div3">
+      <table>
+        <tr>
+          <td>2050</td>
+          <td>Ameaça</td>
+          <td>Exposição</td>
+          <td>Vulnerabilidade</td>
+          <td>Sensibilidade</td>
+          <td>Capacidade adapt.</td>
+        </tr>
+        <tr>
+          <td>0.1</td>
+          <td>Muito alto</td>
+          <td>Muito alto</td>
+          <td></td>
+          <td>Muito alto</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>0.05</td>
+          <td>Médio </td>
+          <td>Médio </td>
+          <td></td>
+          <td>Médio </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>0.2</td>
+          <td>Muito baixo</td>
+          <td>Muito baixo</td>
+          <td></td>
+          <td>Muito baixo</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>-0.2</td>
+          <td>Medio</td>
+          <td>Medio</td>
+          <td></td>
+          <td>Medio</td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</body>
+
+</html>

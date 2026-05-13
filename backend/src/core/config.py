@@ -1,4 +1,6 @@
 # backend/src/core/config.py
+from typing import Dict, List
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 from .constants import PdfEngineType
@@ -17,6 +19,11 @@ class Settings(BaseSettings):
     pdf_engine: PdfEngineType = PdfEngineType.PLAYWRIGHT
     
     template_dir: Path = BACKEND_DIR / "src" / "static" / "report"
+    
+    pages_dir: List[Dict[Path, dict]] = [
+        {BACKEND_DIR / "src" / "static" / "report" / "page_01": {"format": "A3", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {BACKEND_DIR / "src" / "static" / "report" / "page_02": {"format": "A3", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+    ]
     
     pyproject_path: Path = BACKEND_DIR / "pyproject.toml"
 
