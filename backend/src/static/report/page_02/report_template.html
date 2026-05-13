@@ -8,6 +8,22 @@
   <link rel="stylesheet" href="css/style.css">
 
   <title>Página 2</title>
+
+  <style>
+    @page {
+        /* Use 'auto' para que ele respeite o tamanho definido pelo Playwright */
+        size: auto; 
+        margin: 0;
+    }
+
+    /* O seu container principal deve bater com os valores do Python */
+    .slide {
+        width: 1200px;
+        height: 848px;
+        overflow: hidden;
+        page-break-after: always; /* Garante que cada .slide comece em uma nova página */
+    }
+</style>
 </head>
 
 <body>

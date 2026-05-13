@@ -21,8 +21,8 @@ class Settings(BaseSettings):
     template_dir: Path = BACKEND_DIR / "src" / "static" / "report"
     
     pages_dir: List[Dict[Path, dict]] = [
-        {BACKEND_DIR / "src" / "static" / "report" / "page_01": {"format": "A3", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-        {BACKEND_DIR / "src" / "static" / "report" / "page_02": {"format": "A3", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {BACKEND_DIR / "src" / "static" / "report" / "page_01": {"width": "1200px", "height": "918px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {BACKEND_DIR / "src" / "static" / "report" / "page_02": {"width": "1200px", "height": "918px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
     ]
     
     pyproject_path: Path = BACKEND_DIR / "pyproject.toml"
