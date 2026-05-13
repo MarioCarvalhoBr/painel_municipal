@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from ..core.config import settings
 from ..core.constants import ErrorKeys
 from ..domain.entities import County, CountyStatistics, AdaptaData
 from ..domain.interfaces import CountyStatisticsRepositoryInterface, CountyRepositoryInterface, PdfServiceInterface, ProjectInfoServiceInterface, AdaptaDataRepositoryInterface
@@ -92,11 +93,12 @@ async def download_report_pdf(
         "county_record": county_record,
         "county_statistic_record": county_statistic_record,
         "main_factors_record": main_factors_record,
-        "risks_record": risks_record
+        "risks_record": risks_record,
+        "pdf_engine": settings.pdf_engine
     }
 
     try:
-        pdf_bytes = pdf_service.generate_pdf("report_template.html", context)
+        pdf_bytes = await pdf_service.generate_pdf("report_template.html", context)
     except Exception as e:
         print(f"Error generating PDF: {e}")
         raise HTTPException(status_code=500, detail=str(e))

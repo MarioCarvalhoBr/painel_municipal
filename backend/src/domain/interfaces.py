@@ -41,7 +41,7 @@ class AdaptaDataRepositoryInterface(ABC):
 
 class PdfServiceInterface(ABC):
     @abstractmethod
-    def generate_pdf(self, template_name: str, context: dict) -> bytes:
+    async def generate_pdf(self, template_name: str, context: dict) -> bytes:
         pass
 
 class ProjectInfoServiceInterface(ABC):
