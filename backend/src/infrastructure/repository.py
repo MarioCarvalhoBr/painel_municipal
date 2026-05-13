@@ -68,7 +68,7 @@ class AdaptaDataRepository(AdaptaDataRepositoryInterface):
         query = """
             SELECT id, sep_id, county_id, sep, risk, county, microregion, mesoregion, state, region, imageurl, "level", "year", color, "label", "order", value
             FROM painel_municipal.adapta_data
-            WHERE "level" = 2 and county_id = $1 and "year" = ' Ano Presente';
+            WHERE "level" = 2 and county_id = $1 and "year" = ' Ano Presente' order by "value" desc;
         """
         try:
             records = await self.db.fetch_all(query, county_id)
