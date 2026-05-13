@@ -101,7 +101,7 @@ async def download_report_pdf(
     }
 
     try:
-        # Gera PDFs de cada página separadamente e faz merge
+        # Generates PDFs for each page separately and merges them
         pdf_bytes = await pdf_service.generate_pdf_merged(context)
     except Exception as e:
         print(f"Error generating PDF: {e}")
@@ -113,7 +113,7 @@ async def download_report_pdf(
     return Response(content=pdf_bytes, media_type="application/pdf", headers=headers)
 
 
-# Principais fatores 
+# Main factors 
 @router.get("/counties/{county_id}/main-factors", response_model=List[AdaptaData])
 async def get_main_factors(
     county_id: int,
@@ -124,7 +124,7 @@ async def get_main_factors(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-# Principais riscos
+# Main risks
 @router.get("/counties/{county_id}/main-risks", response_model=List[AdaptaData])
 async def get_main_risks(
     county_id: int,

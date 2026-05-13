@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     db_password: str
     db_use_ssl: bool = False
     
-    # Nova variável para trocar o motor de PDF via .env
+    # New variable to switch the PDF engine via .env
     pdf_engine: PdfEngineType = PdfEngineType.PLAYWRIGHT
     
     template_dir: Path = BACKEND_DIR / "src" / "static" / "report"

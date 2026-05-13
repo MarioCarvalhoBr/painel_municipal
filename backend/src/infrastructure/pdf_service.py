@@ -21,11 +21,11 @@ class BasePdfService:
 
 class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
     async def generate_single_page_pdf(self, page_path: Path, context: dict, config: dict) -> bytes:
-        """Gera um PDF para uma página específica com suas configurações."""
+        """Generates a PDF for a specific page with its configuration."""
         from playwright.async_api import async_playwright
         import tempfile
         
-        # Renderiza o template da página
+        # Renders the page template
         context["base_url"] = page_path.absolute().as_uri() + "/"
         print(f"Base URL for template: {context['base_url']}")  # Debugging line
         
@@ -33,7 +33,7 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
         if not template_file.exists():
             raise FileNotFoundError(f"Template not found: {template_file}")
         
-        # Usa o loader com o diretório específico da página
+        # Uses the loader with the page-specific directory
         page_env = Environment(loader=FileSystemLoader(str(page_path)))
         template = page_env.get_template("report_template.html")
         html_content = template.render(**context)
@@ -52,7 +52,7 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
             try:
                 await page.goto(f"file://{tmp_file_path}", wait_until="networkidle")
                 
-                # Usa as configurações específicas da página
+                # Uses the page-specific configuration
                 print(f"Config: {config}")  # Debugging line
                 pdf_bytes = await page.pdf(**config)
             finally:
@@ -63,22 +63,22 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
             return pdf_bytes
     
     async def generate_pdf_merged(self, context: dict) -> bytes:
-        """Gera PDFs de cada página separadamente e depois faz merge."""
+        """Generates PDFs for each page separately and then merges them."""
         pdf_merger = PdfMerger()
         
-        # Itera por cada página definida em settings.pages_dir
+        # Iterates through each page defined in settings.pages_dir
         for page_config in settings.pages_dir:
             for page_path, config in page_config.items():
-                print(f"Gerando PDF para: {page_path}")
+                print(f"Generating PDF for: {page_path}")
                 
-                # Gera o PDF para esta página
+                # Generates the PDF for this page
                 pdf_bytes = await self.generate_single_page_pdf(page_path, context, config)
                 
-                # Adiciona ao merger
+                # Adds to the merger
                 pdf_file = io.BytesIO(pdf_bytes)
                 pdf_merger.append(pdf_file)
         
-        # Escreve o PDF final em memória
+        # Writes the final PDF to memory
         output = io.BytesIO()
         pdf_merger.write(output)
         pdf_merger.close()
