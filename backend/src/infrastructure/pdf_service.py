@@ -25,17 +25,26 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
         from playwright.async_api import async_playwright
         import tempfile
         
+        # Uses the page-specific configuration
+        print(f"Config: {config}")  # Debugging line
+        
+        # page_path is: BACKEND_DIR / "src" / "static" / "report" / "page_02" / "index.html"
+        base_dir_path = page_path.parent  # This will give us the directory containing the template
+        template_name = page_path.name  # This will give us the template file name (e.g., "index.html")
+        print(f"Base directory for template: {base_dir_path}")  # Debugging line
+        print(f"Template name: {template_name}")  # Debugging line
+        
         # Renders the page template
-        context["base_url"] = page_path.absolute().as_uri() + "/"
+        context["base_url"] = base_dir_path.absolute().as_uri() + "/"
         print(f"Base URL for template: {context['base_url']}")  # Debugging line
         
-        template_file = page_path / "report_template.html"
+        template_file = page_path
         if not template_file.exists():
             raise FileNotFoundError(f"Template not found: {template_file}")
         
         # Uses the loader with the page-specific directory
-        page_env = Environment(loader=FileSystemLoader(str(page_path)))
-        template = page_env.get_template("report_template.html")
+        page_env = Environment(loader=FileSystemLoader(str(base_dir_path)))
+        template = page_env.get_template(template_name)
         html_content = template.render(**context)
         
         async with async_playwright() as p:

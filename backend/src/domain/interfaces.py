@@ -2,7 +2,13 @@
 from abc import ABC, abstractmethod
 from typing import List
 from pathlib import Path
-from .entities import County, CountyStatistics, AdaptaData,  ProjectInfo
+from .entities import County, CountyStatistics, AdaptaData,  ProjectInfo, LegendItem
+
+
+class LegendItemRepositoryInterface(ABC):
+    @abstractmethod
+    async def get_legend_items(self) -> List[LegendItem]:
+        pass
 
 class DatabaseInterface(ABC):
     @abstractmethod
