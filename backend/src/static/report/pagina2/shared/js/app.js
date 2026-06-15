@@ -54,6 +54,36 @@
     rect.parentNode.replaceChild(out, rect);
   }
 
+  // Maps each table column (data-bind field) to the row attribute that holds
+  // the background color for that cell. Columns absent here keep their static
+  // design color (e.g. the "2050"/arrow column and the RISCO/sector column).
+  const CELL_COLOR_FIELDS = {
+    tempoAtual: 'tempoAtualColor',
+    ameaca: 'ameacaColor',
+    exposicao: 'exposicaoColor',
+    vulnerabilidade: 'vulnerabilidadeColor',
+    sensibilidade: 'sensibilidadeColor',
+    capacidadeAdaptativa: 'capacidadeAdaptativaColor',
+  };
+
+  function applyCellColor(el, data) {
+    // data-bind paths look like "rows.<index>.<field>". Color the cell's
+    // background rect using the matching *Color attribute from that row.
+    const match = /^rows\.(\d+)\.(\w+)$/.exec(el.getAttribute('data-bind') || '');
+    if (!match) return;
+    const colorField = CELL_COLOR_FIELDS[match[2]];
+    if (!colorField) return;
+    const row = data.rows && data.rows[Number(match[1])];
+    const color = row && row[colorField];
+    if (!color) return;
+    const svg = el.closest('svg');
+    if (!svg) return;
+    // Each cell SVG has a single visible background rect (the stroke-only
+    // frame-background rects live in <defs> and carry no inline fill).
+    const bg = svg.querySelector('rect.frame-background[style*="fill:"]');
+    if (bg) bg.style.fill = color;
+  }
+
   function bindFieldToElement(el, value) {
     if (value == null) return;
     if (el.tagName === 'IMG') {
@@ -98,6 +128,7 @@
       if (typeof value === 'string' || typeof value === 'number') {
         setTextContent(el, value);
       }
+      applyCellColor(el, data);
     });
 
     document.querySelectorAll('[data-bind-src]').forEach((el) => {

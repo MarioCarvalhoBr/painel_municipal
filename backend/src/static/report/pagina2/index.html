@@ -6760,11 +6760,15 @@
           tempoAtual: item.current_value, 
           tempoAtualColor: item.current_value_color, // Adicionado caso precise pintar a bolinha no HTML
           
-          // Mapeando os indicadores e lidando com campos vazios ('') do banco
+          // Mapeando os indicadores e lidando com campos vazios ('') do banco.
+          // *Color: cor de fundo de cada célula, vinda do banco via Jinja2.
           ameaca: item['Ameaça'] !== '' ? item['Ameaça'] : '-',
+          ameacaColor: item['Ameaça_color'],
           exposicao: item['Exposição'] !== '' ? item['Exposição'] : '-',
+          exposicaoColor: item['Exposição_color'],
           vulnerabilidade: item['Vulnerabilidade'] !== '' ? item['Vulnerabilidade'] : '-',
-          
+          vulnerabilidadeColor: item['Vulnerabilidade_color'],
+
           sensibilidade: item['Sensibilidade'] !== '' ? item['Sensibilidade'] : '-',
           sensibilidadeColor: item['Sensibilidade_color'],
           
