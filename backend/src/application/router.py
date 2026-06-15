@@ -12,7 +12,7 @@ from ..core.config import settings
 from ..core.constants import ErrorKeys
 from ..domain.entities import County, CountyStatistics, RiskFactor, RiskFactorReport
 from ..domain.interfaces import CountyStatisticsRepositoryInterface, CountyRepositoryInterface, ImageServiceInterface, PdfServiceInterface, ProjectInfoServiceInterface, RiskFactorRepositoryInterface
-from .dependencies import get_county_repository, get_county_statistics_repository, get_image_service, get_pdf_service, get_project_info_service, get_risk_factor_repository
+from .dependencies import get_county_repository, get_county_statistics_repository, get_pdf_service, get_project_info_service, get_risk_factor_repository
 
 router = APIRouter(prefix="/api/v1")
 
@@ -84,7 +84,6 @@ async def download_all_reports_zip(
     county_statistic_repo: CountyStatisticsRepositoryInterface = Depends(get_county_statistics_repository),
     risk_factor_repo: RiskFactorRepositoryInterface = Depends(get_risk_factor_repository),
     pdf_service: PdfServiceInterface = Depends(get_pdf_service),
-    image_service: ImageServiceInterface = Depends(get_image_service)
 ):
     counties = await county_repo.get_counties()
     if not counties:
@@ -107,7 +106,7 @@ async def download_all_reports_zip(
                     continue
 
                 risks_record = RiskFactorReport(risk_factors=adapta_risks_data).formatted_data_dict
-                risks_record = await _embed_risk_icons(risks_record, image_service)
+                # risks_record = await _embed_risk_icons(risks_record, image_service)
 
                 context = {
                     "county_record": county_data,
@@ -142,7 +141,6 @@ async def download_report_pdf(
     county_statistic_repo: CountyStatisticsRepositoryInterface = Depends(get_county_statistics_repository),
     risk_factor_repo: RiskFactorRepositoryInterface = Depends(get_risk_factor_repository),
     pdf_service: PdfServiceInterface = Depends(get_pdf_service),
-    image_service: ImageServiceInterface = Depends(get_image_service)
 ):
     # Get all data needed for the report
     county_data = await county_repo.get_county(county_id)
@@ -174,7 +172,7 @@ async def download_report_pdf(
 
     # Baixa e embute (base64) cada ícone de risks_record[i].imageurl, para que
     # o PDF fique autocontido e os ícones sejam renderizados em boa qualidade.
-    dados_como_dict = await _embed_risk_icons(dados_como_dict, image_service)
+    # dados_como_dict = await _embed_risk_icons(dados_como_dict, image_service)
     
     # Imprime a primeira linha completa com os os valores do dados_como_dict, para verificar a estrutura e os dados
     if dados_como_dict:
