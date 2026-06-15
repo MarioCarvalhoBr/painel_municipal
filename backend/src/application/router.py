@@ -93,7 +93,7 @@ async def download_all_reports_zip(
 
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
         # Deixar o counties com somente 5 municípios para teste, depois retirar o slicing
-        counties = counties[:5]  # --- IGNORE --- Remove this line to process all counties in production
+        counties = counties[:20]  # --- IGNORE --- Remove this line to process all counties in production
         for county in counties:
             try:
                 county_data = await county_repo.get_county(county.county_id)
