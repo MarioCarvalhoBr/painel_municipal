@@ -54,18 +54,18 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
             ])
             page = await browser.new_page(device_scale_factor=3)
             # 1. Force um viewport de desktop (Full HD) para o CSS não esmagar as colunas
-            await page.set_viewport_size({"width": 1920, "height": 1080, "device_scale_factor": 3})
+            # await page.set_viewport_size({"width": 1920, "height": 1080, "device_scale_factor": 3})
               
             with tempfile.NamedTemporaryFile(delete=False, suffix=".html", mode='w', encoding='utf-8') as tmp_file:
                 tmp_file.write(html_content)
                 tmp_file_path = tmp_file.name
             
             try:
-                await page.emulate_media(media="print")
+                # await page.emulate_media(media="print")
                 await page.goto(f"file://{tmp_file_path}", wait_until="networkidle")
-                await page.wait_for_timeout(1500) # Espera 1.5 segundos para garantir a renderização
+                # await page.wait_for_timeout(1500) # Espera 1.5 segundos para garantir a renderização
                 # Force screen layout (keep links active).
-                page.emulate_media(media="screen")
+                # page.emulate_media(media="screen")
                 
                 # Uses the page-specific configuration
                 # print(f"Config: {config}")  # Debugging line
