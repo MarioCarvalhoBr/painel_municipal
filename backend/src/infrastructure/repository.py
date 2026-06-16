@@ -68,7 +68,7 @@ class RiskFactorRepository(RiskFactorRepositoryInterface):
     
     async def get_risk_factors_by_county_id(self, county_id: int) -> List[RiskFactor]:
             query = """
-                select * from painel_municipal.quatro_pg_2 where county_id = $1 order by sep_id,risk, detail;
+                select * from painel_municipal.quatro_pg_2 where county_id = $1 order by current_value desc, sep_id, risk, detail;
             """
             try:
                 records = await self.db.fetch_all(query, county_id)

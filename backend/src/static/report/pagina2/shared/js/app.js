@@ -56,9 +56,10 @@
 
   // Maps each table column (data-bind field) to the row attribute that holds
   // the background color for that cell. Columns absent here keep their static
-  // design color (e.g. the "2050"/arrow column and the RISCO/sector column).
+  // design color (e.g. the RISCO/sector column).
   const CELL_COLOR_FIELDS = {
     tempoAtual: 'tempoAtualColor',
+    futuro2050: 'futuro2050Color',
     ameaca: 'ameacaColor',
     exposicao: 'exposicaoColor',
     vulnerabilidade: 'vulnerabilidadeColor',

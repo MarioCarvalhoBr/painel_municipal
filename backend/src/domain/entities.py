@@ -54,7 +54,44 @@ class RiskFactor(BaseModel):
     color: Optional[str] = None
     current_value: Optional[float] = None
     current_value_color: Optional[str] = None
+    future_value: Optional[float] = None
+    future_value_color: Optional[str] = None
     imageurl: Optional[str] = None
+    
+    # Função estatic value_formatted para formatar em duas casas decimais e deixar no padrão brasileiro
+    @staticmethod
+    def format_value(value: Optional[float]) -> Optional[str]:
+        if value is None:
+            return None
+        truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=2)
+        brazilian_formatted_value = NumberFormattingProcessing.format_number_brazilian(float(truncated_value))
+        
+        return brazilian_formatted_value
+    
+    # criar uma property para current_value
+    @property
+    def formatted_current_value(self) -> Optional[str]:
+        if self.current_value is None:
+            return None
+        return self.format_value(self.current_value)
+    
+
+    @property
+    def formatted_future_value(self) -> Optional[str]:
+        
+        if self.current_value is None or self.future_value is None:
+            return None
+        
+        result = self.current_value - self.future_value
+        
+        if result > 0:
+            return f"+{self.format_value(result)}"
+        elif result < 0:
+            return f"-{self.format_value(abs(result))}"
+        else:
+            return "=0,00"
+        
+    
 
 class RiskFactorReport(BaseModel):
     # Modificado para receber uma lista, já que precisamos agrupar vários itens
@@ -77,10 +114,17 @@ class RiskFactorReport(BaseModel):
                     "risk": rf.risk,
                     "county": rf.county,
                     "state": rf.state,
+                    "color": rf.color,
+                    "imageurl": rf.imageurl,
+                    
                     "current_value": rf.current_value,
                     "current_value_color": rf.current_value_color,
-                    "imageurl": rf.imageurl,
-                    "color": rf.color,
+                    "formatted_current_value": rf.formatted_current_value,
+                    
+                    "future_value": rf.future_value,
+                    "future_value_color": rf.future_value_color,
+                    "formatted_future_value": rf.formatted_future_value,
+                    
                     "Ameaça": "",
                     "Exposição": "",
                     "Vulnerabilidade": "",
@@ -98,6 +142,12 @@ class RiskFactorReport(BaseModel):
                 agrupado[rf.risk_id][rf.detail] = rf.value
                 
                 agrupado[rf.risk_id][f"{rf.detail}_color"] = rf.color
+                
+        # Aplique a formatação brasileira para os valores numéricos format_value: Ameaça, Exposição, Vulnerabilidade, Sensibilidade, Capacidade adaptativa
+        for key, item in agrupado.items():
+            for col in ["Ameaça", "Exposição", "Vulnerabilidade", "Sensibilidade", "Capacidade adaptativa"]:
+                if col in item and item[col] is not None:
+                    item[col] = RiskFactor.format_value(item[col])
                 
         # Retorna apenas os valores do dicionário (que será uma lista de dicionários na ordem original)
         return list(agrupado.values())

@@ -48,9 +48,11 @@ class NumberFormattingProcessing:
         try:
             if "." in s_val:
                 integer_part, decimal_part = s_val.split(".")
+                decimal_part = decimal_part + "0" * precision
                 truncated_val = f"{integer_part}.{decimal_part[:precision]}"
             else:
                 truncated_val = s_val
+                
             return Decimal(truncated_val)
         except (ValueError, InvalidOperation, Exception):
             return Decimal("0")
@@ -61,10 +63,15 @@ class NumberFormattingProcessing:
         Format a number using Brazilian locale conventions.
 
         Args:
-            n (float): Number to format.
+            n (float | int): Number to format.
             locale (str, optional): Locale string. Default is "pt_BR".
 
         Returns:
             str: Formatted number string (e.g., '1.234,56').
         """
-        return format_decimal(number=n, locale=locale)
+        # If it's a strictly integer value (like population), format without decimal places
+        if isinstance(n, int):
+            return format_decimal(number=n, locale=locale)
+        
+        # For floats (like area, risks), force the format with exactly 2 decimal places
+        return format_decimal(number=n, format='#,##0.00', locale=locale)

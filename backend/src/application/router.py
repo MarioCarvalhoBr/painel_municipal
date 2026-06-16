@@ -182,12 +182,6 @@ async def download_report_pdf(
     print("--- Formato Lista de Dicionários ---")
     # print(dados_como_dict)
 
-    # Opção B: Como um DataFrame do Pandas (perfeito para manipulação ou exportação)
-    df_formatado = risk_factor_report.formatted_data_df
-    print("\n--- Formato DataFrame do Pandas ---")
-    # print(df_formatado)
-
-
     
     context = {
         "county_record": county_record,
