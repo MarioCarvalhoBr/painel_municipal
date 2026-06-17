@@ -19,6 +19,11 @@ class CountyRepository(CountyRepositoryInterface):
         """
         try:
             records = await self.db.fetch_all(query)
+            if not records:
+                print("--- No counties found")  # Debugging line
+                raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
+            else:
+                print(f"--- Counties found: {len(records)}")  # Debugging line
             return [County(**record) for record in records]
         except Exception:
             raise Exception(ErrorKeys.DATA_RETRIEVAL_FAILED.value)
@@ -29,6 +34,11 @@ class CountyRepository(CountyRepositoryInterface):
         """
         try:
             records = await self.db.fetch_all(query, county_id)
+            if not records:
+                print(f"--- No county found for county_id: {county_id}")  # Debugging line
+                raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
+            else:
+                print(f"--- County found for county_id {county_id}: {records[0]}")  # Debugging line
             if not records:
                 raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
             return County(**records[0])
@@ -46,6 +56,11 @@ class CountyStatisticsRepository(CountyStatisticsRepositoryInterface):
         """
         try:
             records = await self.db.fetch_all(query)
+            if not records:
+                print("--- No county statistics found")  # Debugging line
+                raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
+            else:
+                print(f"--- County statistics found: {len(records)}")  # Debugging line
             return [CountyStatistics(**record) for record in records]
         except Exception:
             raise Exception(ErrorKeys.DATA_RETRIEVAL_FAILED.value)
@@ -57,7 +72,11 @@ class CountyStatisticsRepository(CountyStatisticsRepositoryInterface):
         try:
             records = await self.db.fetch_all(query, county_id)
             if not records:
+                print(f"--- No statistics found for county_id: {county_id}")  # Debugging line
                 raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
+            else: 
+                print(f"--- Statistics found for county_id {county_id}: {len(records)}")  # Debugging line
+                
             return CountyStatistics(**records[0])
         except Exception as e:
             raise Exception(str(e))
@@ -75,13 +94,12 @@ class RiskFactorRepository(RiskFactorRepositoryInterface):
                 
                 
                 if not records:
-                    print("No records found for county_id:", county_id)  # Debugging line
+                    print("--- No risk factors found for county_id:", county_id)  # Debugging line
                     raise Exception(ErrorKeys.RISK_FACTOR_NOT_FOUND.value)
                 else:
-                    print(f"Records found for county_id {county_id}: {len(records)}")  # Debugging line
+                    print(f"--- Risk factors found for county_id {county_id}: {len(records)}")  # Debugging line
                     # impirme 1 linha com key-value 
-                    for record in records[:1]:  # Print only the first record for debugging
-                        print("Sample record:", {key: record[key] for key in record.keys()})  # Debugging line
+                    # for record in records[:1]: print("Sample record:", {key: record[key] for key in record.keys()})  # Debugging line
                     
                     
                 return [RiskFactor(**record) for record in records]

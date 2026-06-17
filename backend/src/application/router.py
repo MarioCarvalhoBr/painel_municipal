@@ -131,9 +131,9 @@ async def download_all_reports_zip(
     return Response(content=zip_buffer.getvalue(), media_type="application/zip", headers=headers)
 
 
-# Rate Limit Decorator: Max 2 PDFs per minute per IP!
+# Rate Limit Decorator: Max 200 PDFs per minute per IP!
 @router.get("/reports/pdf/{county_id}")
-@limiter.limit("20/minute")
+@limiter.limit("200/minute")
 async def download_report_pdf(
     request: Request,
     county_id: int,
@@ -142,6 +142,10 @@ async def download_report_pdf(
     risk_factor_repo: RiskFactorRepositoryInterface = Depends(get_risk_factor_repository),
     pdf_service: PdfServiceInterface = Depends(get_pdf_service),
 ):
+    # Prinjt initial log to confirm endpoint is hit
+    print(f"---"*30)
+    print(f"--- PDF Report Request ---")
+    print(f"--- Received request for PDF report of county_id: {county_id} from IP: {request.client.host}")
     # Get all data needed for the report
     county_data = await county_repo.get_county(county_id)
     county_statistic_data = await county_statistic_repo.get_county_statistics(county_id)
@@ -163,11 +167,8 @@ async def download_report_pdf(
     main_factors_record = adapta_main_factors_data    
     risk_factor_report = RiskFactorReport(risk_factors=risk_factors_data).formatted_data_dict
 
-    if risk_factor_report:
-        print("\n--- Example of embedded image URL as data URI ---")
-        print(risk_factor_report[0])
+    # if risk_factor_report: print(risk_factor_report[0])
 
-    
     context = {
         "county_record": county_record,
         "county_statistic_record": county_statistic_record,
@@ -179,6 +180,8 @@ async def download_report_pdf(
     try:
         # Generates PDFs for each page separately and merges them
         pdf_bytes = await pdf_service.generate_pdf_merged(context)
+        print(f"--- PDF Report Generated ---")
+        print(f"--- Successfully generated PDF for county_id: {county_id}, sending response...")
     except Exception as e:
         print(f"Error generating PDF: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -186,6 +189,10 @@ async def download_report_pdf(
     headers = {
         "Content-Disposition": f'attachment; filename="{county_record.county_id}_{county_record.county}_Plano_Adaptacao.pdf"'
     }
+    print(f"---"*30)
+    print("\n\n")
+
+
     return Response(content=pdf_bytes, media_type="application/pdf", headers=headers)
 
 
