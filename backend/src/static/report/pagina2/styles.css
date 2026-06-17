@@ -10333,3 +10333,18 @@ body {
   font-style: normal;
   font-weight: 400;
 }
+
+@media print {
+    /* Evita que as linhas do relatório sejam cortadas ao meio na quebra de página */
+    /* Substitua '.linha-tabela' pela classe real que envolve a linha (row) dos seus dados */
+    .row, .risk-row, tr, .container-linha { 
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Corrige o esmagamento das colunas (ajuste o nome da classe conforme seu HTML) */
+    .coluna, .cell {
+        flex-shrink: 0 !important; /* Impede que a coluna encolha mais do que o conteúdo */
+        word-wrap: break-word; /* Força palavras muito longas a quebrarem */
+    }
+}
