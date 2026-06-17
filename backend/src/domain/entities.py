@@ -55,7 +55,7 @@ class RiskFactor(BaseModel):
     current_value: Optional[float] = None
     current_value_color: Optional[str] = None
     future_value: Optional[float] = None
-    future_value_color: Optional[str] = None
+    future_color: Optional[str] = None
     imageurl: Optional[str] = None
     
     @staticmethod
@@ -91,7 +91,7 @@ class RiskFactorReport(BaseModel):
                     "formatted_current_value": RiskFactor.format_value(rf.current_value),
                     
                     "future_value": rf.future_value,
-                    "future_value_color": rf.future_value_color,
+                    "future_color": rf.future_color,
                     "formatted_future_value": RiskFactor.format_value(rf.future_value),
                     
                     "Ameaça": "",
