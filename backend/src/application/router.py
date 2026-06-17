@@ -160,34 +160,19 @@ async def download_report_pdf(
     # Prepare context for PDF generation
     county_record = county_data
     county_statistic_record = county_statistic_data
-    main_factors_record = adapta_main_factors_data
-    print("-----------------------")
-    
-    risk_factor_report = RiskFactorReport(risk_factors=risk_factors_data)
+    main_factors_record = adapta_main_factors_data    
+    risk_factor_report = RiskFactorReport(risk_factors=risk_factors_data).formatted_data_dict
 
-    # 3. Obter os dados processados na forma que preferir:
-
-    # Opção A: Como uma lista de dicionários (preserva a ordem nativa e é ideal para APIs)
-    dados_como_dict = risk_factor_report.formatted_data_dict
-
-    # Baixa e embute (base64) cada ícone de risks_record[i].imageurl, para que
-    # o PDF fique autocontido e os ícones sejam renderizados em boa qualidade.
-    # dados_como_dict = await _embed_risk_icons(dados_como_dict, image_service)
-    
-    # Imprime a primeira linha completa com os os valores do dados_como_dict, para verificar a estrutura e os dados
-    if dados_como_dict:
-        print("\n--- Exemplo de linha do dados_como_dict ---")
-        print(dados_como_dict[0])
-
-    print("--- Formato Lista de Dicionários ---")
-    # print(dados_como_dict)
+    if risk_factor_report:
+        print("\n--- Example of embedded image URL as data URI ---")
+        print(risk_factor_report[0])
 
     
     context = {
         "county_record": county_record,
         "county_statistic_record": county_statistic_record,
         "main_factors_record": main_factors_record,
-        "risks_record": dados_como_dict,
+        "risks_record": risk_factor_report,
         "pdf_engine": settings.pdf_engine,
     }
 
