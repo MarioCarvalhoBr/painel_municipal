@@ -58,7 +58,6 @@ class RiskFactor(BaseModel):
     future_value_color: Optional[str] = None
     imageurl: Optional[str] = None
     
-    # Função estatic value_formatted para formatar em duas casas decimais e deixar no padrão brasileiro
     @staticmethod
     def format_value(value: Optional[float]) -> Optional[str]:
         if value is None:
@@ -67,48 +66,18 @@ class RiskFactor(BaseModel):
         brazilian_formatted_value = NumberFormattingProcessing.format_number_brazilian(float(truncated_value))
         
         return brazilian_formatted_value
-    
-    # criar uma property para current_value
-    @property
-    def formatted_current_value(self) -> Optional[str]:
-        if self.current_value is None:
-            return None
-        return self.format_value(self.current_value)
-    
-
-    @property
-    def formatted_future_value(self) -> Optional[str]:
         
-        if self.current_value is None or self.future_value is None:
-            return None
-        
-        result = self.current_value - self.future_value
-        
-        if result > 0:
-            return f"+{self.format_value(result)}"
-        elif result < 0:
-            return f"-{self.format_value(abs(result))}"
-        else:
-            return "=0,00"
-        
-    
 
 class RiskFactorReport(BaseModel):
-    # Modificado para receber uma lista, já que precisamos agrupar vários itens
     risk_factors: List[RiskFactor]
         
     @property
     def formatted_data_dict(self) -> List[Dict[str, Any]]:
-        """
-        Retorna os dados agrupados como uma lista de dicionários,
-        preservando a ordem do banco de dados.
-        """
-        agrupado = {}
+        grouped_risks = {}
         
         for rf in self.risk_factors:
-            # Se é a primeira vez que vemos este risk_id, criamos a linha base
-            if rf.risk_id not in agrupado:
-                agrupado[rf.risk_id] = {
+            if rf.risk_id not in grouped_risks:
+                grouped_risks[rf.risk_id] = {
                     "risk_id": rf.risk_id,
                     "sep": rf.sep,
                     "risk": rf.risk,
@@ -119,11 +88,11 @@ class RiskFactorReport(BaseModel):
                     
                     "current_value": rf.current_value,
                     "current_value_color": rf.current_value_color,
-                    "formatted_current_value": rf.formatted_current_value,
+                    "formatted_current_value": RiskFactor.format_value(rf.current_value),
                     
                     "future_value": rf.future_value,
                     "future_value_color": rf.future_value_color,
-                    "formatted_future_value": rf.formatted_future_value,
+                    "formatted_future_value": RiskFactor.format_value(rf.future_value),
                     
                     "Ameaça": "",
                     "Exposição": "",
@@ -132,33 +101,23 @@ class RiskFactorReport(BaseModel):
                     "Capacidade adaptativa": ""
                 }
             
-            # Aqui fazemos a transposição: a string em 'detail' vira a chave (coluna),
-            # e recebe o valor 'value'. 
-            # Ex: agrupado[2]['Capacidade adaptativa'] = 0.38
             if rf.detail:
-                # Opcional: Você pode querer normalizar a string (ex: title()) 
-                # caso o banco traga variações de maiúsculas/minúsculas
-                coluna_transposta = rf.detail.capitalize() if rf.detail.lower() == "capacidade adaptativa" else rf.detail
-                agrupado[rf.risk_id][rf.detail] = rf.value
+                # If the detail is "capacidade adaptativa", we want to keep it as is, otherwise we can capitalize it
+                # coluna_transposta = rf.detail.capitalize() if rf.detail.lower() == "capacidade adaptativa" else rf.detail
                 
-                agrupado[rf.risk_id][f"{rf.detail}_color"] = rf.color
+                grouped_risks[rf.risk_id][rf.detail] = rf.value
+                grouped_risks[rf.risk_id][f"{rf.detail}_color"] = rf.color
                 
-        # Aplique a formatação brasileira para os valores numéricos format_value: Ameaça, Exposição, Vulnerabilidade, Sensibilidade, Capacidade adaptativa
-        for key, item in agrupado.items():
+        # Apply formatting to the specific columns after all values have been assigned
+        for key, item in grouped_risks.items():
             for col in ["Ameaça", "Exposição", "Vulnerabilidade", "Sensibilidade", "Capacidade adaptativa"]:
                 if col in item and item[col] is not None:
                     item[col] = RiskFactor.format_value(item[col])
                 
-        # Retorna apenas os valores do dicionário (que será uma lista de dicionários na ordem original)
-        return list(agrupado.values())
+        return list(grouped_risks.values())
 
     @property
     def formatted_data_df(self) -> pd.DataFrame:
-        """
-        Retorna os dados no formato DataFrame do Pandas,
-        mantendo a exata ordenação das linhas.
-        """
-        # O Pandas cria o DataFrame perfeitamente a partir de uma lista de dicionários
         return pd.DataFrame(self.formatted_data_dict)
     
     
