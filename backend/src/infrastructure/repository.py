@@ -2,8 +2,8 @@ import json
 
 # backend/src/infrastructure/repository.py
 from typing import List
-from ..domain.interfaces import DatabaseInterface, CountyStatisticsRepositoryInterface, CountyRepositoryInterface, RiskFactorRepositoryInterface, LegendItemRepositoryInterface
-from ..domain.entities import CountyStatistics, County, RiskFactor, LegendItem
+from ..domain.interfaces import DatabaseInterface, CountyRepositoryInterface, RiskFactorRepositoryInterface, MunicipalIndicatorsRepositoryInterface
+from ..domain.entities import County, RiskFactor, MunicipalIndicators
 from ..core.constants import ErrorKeys
 
 class CountyRepository(CountyRepositoryInterface):
@@ -45,42 +45,6 @@ class CountyRepository(CountyRepositoryInterface):
         except Exception as e:
             raise Exception(str(e))
         
-class CountyStatisticsRepository(CountyStatisticsRepositoryInterface):
-    def __init__(self, db: DatabaseInterface):
-        self.db = db
-
-    async def get_counties_statistics(self) -> List[CountyStatistics]:
-        
-        query = """
-            SELECT DISTINCT county_id, county, state, CONCAT(county, ' - ', state) AS display FROM painel_municipal.adapta_data ORDER BY display;
-        """
-        try:
-            records = await self.db.fetch_all(query)
-            if not records:
-                print("--- No county statistics found")  # Debugging line
-                raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
-            else:
-                print(f"--- County statistics found: {len(records)}")  # Debugging line
-            return [CountyStatistics(**record) for record in records]
-        except Exception:
-            raise Exception(ErrorKeys.DATA_RETRIEVAL_FAILED.value)
-        
-    async def get_county_statistics(self, county_id: int) -> CountyStatistics:
-        query = """
-            SELECT id, county_id, gdp, area, idh, population FROM painel_municipal.county_data WHERE county_id = $1;
-        """
-        try:
-            records = await self.db.fetch_all(query, county_id)
-            if not records:
-                print(f"--- No statistics found for county_id: {county_id}")  # Debugging line
-                raise Exception(ErrorKeys.COUNTY_NOT_FOUND.value)
-            else: 
-                print(f"--- Statistics found for county_id {county_id}: {len(records)}")  # Debugging line
-                
-            return CountyStatistics(**records[0])
-        except Exception as e:
-            raise Exception(str(e))
-        
 class RiskFactorRepository(RiskFactorRepositoryInterface):
     def __init__(self, db: DatabaseInterface):
         self.db = db
@@ -106,32 +70,21 @@ class RiskFactorRepository(RiskFactorRepositoryInterface):
             except Exception as e:
                 raise Exception(str(e))
         
-  
-    async def get_main_factors_by_county_id(self, county_id: int) -> List[RiskFactor]:
+class MunicipalIndicatorsRepository(MunicipalIndicatorsRepositoryInterface):
+    def __init__(self, db: DatabaseInterface):
+        self.db = db
+        
+    async def get_municipal_report(self, county_id: int) -> MunicipalIndicators:
         query = """
-            SELECT DISTINCT sep_id, sep, imageurl 
-            FROM painel_municipal.adapta_data 
-            WHERE level = 2 AND county_id = $1 AND "year" = ' Ano Presente'; 
+            SELECT * FROM painel_municipal.pg_3 WHERE county_id = $1;
         """
         try:
             records = await self.db.fetch_all(query, county_id)
             if not records:
-                raise Exception(ErrorKeys.RISK_FACTOR_NOT_FOUND.value)
-            return [RiskFactor(**record) for record in records]
+                print(f"--- No municipal report found for county_id: {county_id}")  # Debugging line
+                raise Exception(ErrorKeys.MUNICIPAL_REPORT_NOT_FOUND.value)
+            else:
+                print(f"--- Municipal report found for county_id {county_id}: {len(records)}")  # Debugging line
+            return MunicipalIndicators(**records[0])
         except Exception as e:
             raise Exception(str(e))
-        
-        
-class LegendItemRepository(LegendItemRepositoryInterface):
-    def __init__(self, db: DatabaseInterface):
-        self.db = db
-        
-    async def get_legend_items(self) -> List[LegendItem]:
-        query = """
-            SELECT * FROM adaptabrasil.legend_items li WHERE legend_id = 1 ORDER BY minvalue, maxvalue;
-        """
-        try:
-            records = await self.db.fetch_all(query)
-            return [LegendItem(**record) for record in records]
-        except Exception:
-            raise Exception(ErrorKeys.DATA_RETRIEVAL_FAILED.value)
