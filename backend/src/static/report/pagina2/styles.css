@@ -10348,3 +10348,15 @@ body {
         word-wrap: break-word; /* Força palavras muito longas a quebrarem */
     }
 }
+
+
+/* link-45deg */
+.link45deg-4ae09664c29c {
+  position: absolute;
+  left: 243.98px;
+  top: 105.8px;
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+  mix-blend-mode: normal;
+}

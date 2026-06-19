@@ -87,7 +87,7 @@ async def download_report_pdf(
     risk_factor_report = RiskFactorReport(risk_factors=risk_factors_data).formatted_data_dict
     municipal_report_record = MunicipalIndicatorsReport(municipal_indicators=municipal_report_data).formatted_data_dict
 
-    # if risk_factor_report: print(risk_factor_report[0])
+    if risk_factor_report: print(risk_factor_report[0])
 
     context = {
         # Tables Data

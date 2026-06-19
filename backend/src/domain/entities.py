@@ -61,6 +61,7 @@ class RiskFactor(BaseModel):
     future_value: Optional[float] = None
     future_color: Optional[str] = None
     imageurl: Optional[str] = None
+    risk_url: Optional[str] = None
 
 class RiskFactorReport(BaseModel):
     risk_factors: List[RiskFactor]
@@ -80,7 +81,7 @@ class RiskFactorReport(BaseModel):
                     "state": rf.state,
                     "color": rf.color,
                     "imageurl": rf.imageurl,
-                    
+                    "risk_url": rf.risk_url,
                     "current_value": rf.current_value,
                     "current_value_color": rf.current_value_color,
                     "formatted_current_value": CommonBusinessRules.brazilian_formatted_value(rf.current_value),
@@ -126,7 +127,7 @@ class MunicipalIndicators(BaseModel):
     pop_rural_pessoas: Optional[float] = None
     pop_rural_pct: Optional[float] = None
     densidade_urb: Optional[float] = None
-    pib: Optional[str] = None
+    pib: Optional[float] = None
     
     # Population characteristics fields
     mulheres: Optional[float] = None
@@ -141,8 +142,8 @@ class MunicipalIndicators(BaseModel):
     ## IDH and related indicators
     idh: Optional[float] = None
     renda_media: Optional[float] = None
-    escolaridade: Optional[int] = None
-    expec_vida: Optional[int] = None
+    escolaridade: Optional[float] = None
+    expec_vida: Optional[float] = None
     
     ## Social programs
     firjan: Optional[float] = None
@@ -150,13 +151,13 @@ class MunicipalIndicators(BaseModel):
     alfabet: Optional[float] = None
     
     ## Infrastructure and services
-    leito_hab: Optional[int] = None
-    prof_hab: Optional[int] = None
+    leito_hab: Optional[float] = None
+    prof_hab: Optional[float] = None
     cob_vacinal: Optional[float] = None
     
     ## Vulnerable populations
-    pop_fav: Optional[int] = None
-    dom_semi_inadeq: Optional[int] = None
+    pop_fav: Optional[float] = None
+    dom_semi_inadeq: Optional[float] = None
     
     ## Access to services
     acesso_agua2: Optional[float] = None
@@ -176,16 +177,7 @@ class MunicipalIndicatorsReport(BaseModel):
                 continue
             if key == "area":
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} km²"
-            elif  key == "pib":
-                pib_str = str(value)
-                if pib_str.count(".") > 1:
-                    last_dot_index = pib_str.rfind(".")
-                    pib_str = pib_str[:last_dot_index].replace(".", "") + "," + pib_str[last_dot_index+1:]
-                else:
-                    pib_str = pib_str.replace(".", ",")
-                    
-                data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(float(NumberFormattingProcessing.parse_to_decimal(pib_str)))}"
-            elif key == "renda_media":
+            elif key in ["renda_media", "pib"]:
                 data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(value)}"
             elif key == "densidade_urb":
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} hab/km²"
