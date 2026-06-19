@@ -7,7 +7,7 @@ from slowapi.util import get_remote_address
 
 from ..core.config import settings
 from ..core.constants import ErrorKeys
-from ..domain.entities import County, RiskFactorReport
+from ..domain.entities import County, RiskFactorReport, MunicipalIndicatorsReport
 
 from ..domain.interfaces import  PdfServiceInterface, ProjectInfoServiceInterface
 from ..domain.interfaces import CountyRepositoryInterface, RiskFactorRepositoryInterface, MunicipalIndicatorsRepositoryInterface
@@ -85,7 +85,7 @@ async def download_report_pdf(
     # Prepare context for PDF generation
     county_record = county_data
     risk_factor_report = RiskFactorReport(risk_factors=risk_factors_data).formatted_data_dict
-    municipal_report_record = municipal_report_data
+    municipal_report_record = MunicipalIndicatorsReport(municipal_indicators=municipal_report_data).formatted_data_dict
 
     # if risk_factor_report: print(risk_factor_report[0])
 

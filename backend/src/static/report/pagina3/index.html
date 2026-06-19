@@ -2,6 +2,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8">
+    <base href="{{ base_url }}">
     <title>AdaptaBrasil — Página 3 (Relatório Municipal)</title>
     <link rel="stylesheet" href="../shared/css/fonts.css">
     <link rel="stylesheet" href="./styles.css">
@@ -897,6 +898,58 @@
 </div>
 
     <script src="./data.js"></script>
-    <script src="../shared/js/app.js"></script>
+    <script src="./shared/js/app.js"></script>
+
+         <script>
+      // Imprimir o conteúdo de window.PAGE_DATA que vem de data.js para o console
+      console.log('PAGE_DATA (Antes):', window.PAGE_DATA);
+
+      // Injetando dados básicos de localização via Jinja2
+      window.PAGE_DATA.location.city = "{{ county_record.county }}";
+      window.PAGE_DATA.location.state = "{{ county_record.state }}";
+
+      // Territorial fields
+      window.PAGE_DATA.territorio.area = "{{ municipal_report_record.area }}";
+      window.PAGE_DATA.territorio.regiaoInfluencia = "{{ municipal_report_record.regic_influencia }}";
+      window.PAGE_DATA.territorio.densidadeUrbana = "{{ municipal_report_record.densidade_urb }}";
+      window.PAGE_DATA.territorio.pibPerCapita = "{{ municipal_report_record.pib }}";
+      window.PAGE_DATA.territorio.idh = "{{ municipal_report_record.idh }}";
+      window.PAGE_DATA.territorio.rendaMedia = "{{ municipal_report_record.renda_media }}";
+      window.PAGE_DATA.territorio.escolaridade = "{{ municipal_report_record.escolaridade }}";
+      window.PAGE_DATA.territorio.expectativaVida = "{{ municipal_report_record.expec_vida }}";
+
+      // Population characteristics fields
+      window.PAGE_DATA.populacao.urbana.pct = "{{ municipal_report_record.pop_urb_pct }}";
+      window.PAGE_DATA.populacao.urbana.total = "{{ municipal_report_record.pop_urb_pessoas }}";
+      window.PAGE_DATA.populacao.rural.pct = "{{ municipal_report_record.pop_rural_pct }}";
+      window.PAGE_DATA.populacao.rural.total = "{{ municipal_report_record.pop_rural_pessoas }}";
+      window.PAGE_DATA.populacao.grupos.mulheres = "{{ municipal_report_record.mulheres }}";
+      window.PAGE_DATA.populacao.grupos.pretosPardos = "{{ municipal_report_record.pretos_pardos }}";
+      window.PAGE_DATA.populacao.grupos.infantil = "{{ municipal_report_record.pop_inf }}";
+      window.PAGE_DATA.populacao.grupos.idosa = "{{ municipal_report_record.pop_idosa }}";
+      window.PAGE_DATA.populacao.grupos.imigrantes = "{{ municipal_report_record.imigrantes }}";
+      window.PAGE_DATA.populacao.grupos.indigenas = "{{ municipal_report_record.indigenas }}";
+      window.PAGE_DATA.populacao.grupos.quilombolas = "{{ municipal_report_record.quilombolas }}";
+
+      // Socioeconomic conditions
+      window.PAGE_DATA.socioeconomicas.firjan.indice = "{{ municipal_report_record.firjan }}";
+      window.PAGE_DATA.socioeconomicas.firjan.bolsaFamiliaFamilias = "{{ municipal_report_record.bolsa_familia }}";
+      window.PAGE_DATA.socioeconomicas.firjan.alfabetizados = "{{ municipal_report_record.alfabet }}";
+      window.PAGE_DATA.socioeconomicas.saude.leitos = "{{ municipal_report_record.leito_hab }}";
+      window.PAGE_DATA.socioeconomicas.saude.profissionais = "{{ municipal_report_record.prof_hab }}";
+      window.PAGE_DATA.socioeconomicas.saude.vacinal = "{{ municipal_report_record.cob_vacinal }}";
+      window.PAGE_DATA.socioeconomicas.domicilios.favelas = "{{ municipal_report_record.pop_fav }}";
+      window.PAGE_DATA.socioeconomicas.domicilios.semiInadequados = "{{ municipal_report_record.dom_semi_inadeq }}";
+      window.PAGE_DATA.socioeconomicas.acessos.agua = "{{ municipal_report_record.acesso_agua2 }}";
+      window.PAGE_DATA.socioeconomicas.acessos.esgoto = "{{ municipal_report_record.acesso_esgoto }}";
+      window.PAGE_DATA.socioeconomicas.acessos.energia = "{{ municipal_report_record.acesso_energia }}";
+      window.PAGE_DATA.socioeconomicas.acessos.residuos = "{{ municipal_report_record.acesso_lixo }}";
+
+
+      
+
+      console.log('PAGE_DATA (Depois da injeção):', window.PAGE_DATA);
+    </script>
+
   </body>
 </html>

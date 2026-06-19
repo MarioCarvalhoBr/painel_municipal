@@ -7,13 +7,30 @@ from ..helpers.common.formatting.number_formatting_processing import NumberForma
 
 class CommonBusinessRules(BaseModel):
     @staticmethod
-    def format_value(value: Optional[float]) -> Optional[str]:
+    def brazilian_formatted_value(value: Optional[float | int]) -> Optional[str]:
         if value is None:
-            return None
+            return "—"
         truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=2)
-        brazilian_formatted_value = NumberFormattingProcessing.format_number_brazilian(float(truncated_value))
         
-        return brazilian_formatted_value
+        if isinstance(value, (float)):
+            return NumberFormattingProcessing.format_number_brazilian(float(truncated_value))
+        elif isinstance(value, (int)):
+            return NumberFormattingProcessing.format_number_brazilian(int(truncated_value))
+        
+        return "—"
+    
+    @staticmethod
+    def brazilian_formatted_value_ignore_two_zeros(value: Optional[float | int]) -> Optional[str]:
+        if value is None:
+            return "—"
+        truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=2)
+        
+        if isinstance(value, (float)):
+            return NumberFormattingProcessing.format_number_brazilian_ignore_two_zeros(float(truncated_value))
+        elif isinstance(value, (int)):
+            return NumberFormattingProcessing.format_number_brazilian_ignore_two_zeros(int(truncated_value))
+        
+        return "—"
 
 class County(BaseModel):
     county_id: int
@@ -66,11 +83,11 @@ class RiskFactorReport(BaseModel):
                     
                     "current_value": rf.current_value,
                     "current_value_color": rf.current_value_color,
-                    "formatted_current_value": CommonBusinessRules.format_value(rf.current_value),
+                    "formatted_current_value": CommonBusinessRules.brazilian_formatted_value(rf.current_value),
                     
                     "future_value": rf.future_value,
                     "future_color": rf.future_color,
-                    "formatted_future_value": CommonBusinessRules.format_value(rf.future_value),
+                    "formatted_future_value": CommonBusinessRules.brazilian_formatted_value(rf.future_value),
                     
                     "Ameaça": "",
                     "Exposição": "",
@@ -90,7 +107,7 @@ class RiskFactorReport(BaseModel):
         for key, item in grouped_risks.items():
             for col in ["Ameaça", "Exposição", "Vulnerabilidade", "Sensibilidade", "Capacidade adaptativa"]:
                 if col in item and item[col] is not None:
-                    item[col] = CommonBusinessRules.format_value(item[col])
+                    item[col] = CommonBusinessRules.brazilian_formatted_value(item[col])
                 
         return list(grouped_risks.values())
 
@@ -104,12 +121,12 @@ class MunicipalIndicators(BaseModel):
     county_id: Optional[int] = None
     area: Optional[float] = None
     regic_influencia: Optional[str] = None
-    pop_urb_pessoas: Optional[int] = None # TODO: apply brazilian formatting to this field in the report
+    pop_urb_pessoas: Optional[float] = None # TODO: apply brazilian formatting to this field in the report
     pop_urb_pct: Optional[float] = None
-    pop_rural_pessoas: Optional[int] = None
+    pop_rural_pessoas: Optional[float] = None
     pop_rural_pct: Optional[float] = None
     densidade_urb: Optional[float] = None
-    pib: Optional[float] = None
+    pib: Optional[str] = None
     
     # Population characteristics fields
     mulheres: Optional[float] = None
@@ -124,8 +141,8 @@ class MunicipalIndicators(BaseModel):
     ## IDH and related indicators
     idh: Optional[float] = None
     renda_media: Optional[float] = None
-    escolaridade: Optional[float] = None
-    expec_vida: Optional[float] = None
+    escolaridade: Optional[int] = None
+    expec_vida: Optional[int] = None
     
     ## Social programs
     firjan: Optional[float] = None
@@ -133,8 +150,8 @@ class MunicipalIndicators(BaseModel):
     alfabet: Optional[float] = None
     
     ## Infrastructure and services
-    leito_hab: Optional[float] = None
-    prof_hab: Optional[float] = None
+    leito_hab: Optional[int] = None
+    prof_hab: Optional[int] = None
     cob_vacinal: Optional[float] = None
     
     ## Vulnerable populations
@@ -146,6 +163,66 @@ class MunicipalIndicators(BaseModel):
     acesso_esgoto: Optional[float] = None
     acesso_energia: Optional[float] = None
     acesso_lixo: Optional[float] = None
+
+class MunicipalIndicatorsReport(BaseModel):
+    municipal_indicators: MunicipalIndicators
+    
+    @property
+    def formatted_data_dict(self) -> Dict[str, Any]:
+        data = self.municipal_indicators.dict()
+        for key, value in data.items():
+            if value is None:
+                data[key] = "—"
+                continue
+            if key == "area":
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} km²"
+            elif  key == "pib":
+                pib_str = str(value)
+                if pib_str.count(".") > 1:
+                    last_dot_index = pib_str.rfind(".")
+                    pib_str = pib_str[:last_dot_index].replace(".", "") + "," + pib_str[last_dot_index+1:]
+                else:
+                    pib_str = pib_str.replace(".", ",")
+                    
+                data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(float(NumberFormattingProcessing.parse_to_decimal(pib_str)))}"
+            elif key == "densidade_urb":
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} hab/km²"
+            elif key in ["pop_urb_pct", "pop_rural_pct", "mulheres", "pretos_pardos", "pop_inf", "pop_idosa", "imigrantes", "indigenas", "quilombolas", "alfabet", "cob_vacinal"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
+            elif key in ["bolsa_familia"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% das famílias" 
+            elif key in ["renda_media", "firjan", "acesso_agua2", "acesso_esgoto", "acesso_energia", "acesso_lixo"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_value(value)
+            elif key in ["pop_urb_pessoas", "pop_rural_pessoas"]:
+                if not isinstance(value, (float, int)):
+                    data[key] = "—"
+                else:
+                    value = value * 1000000
+                    value = int(value)
+                    data[key] = CommonBusinessRules.brazilian_formatted_value(value)
+            elif key in ["leito_hab", "prof_hab"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} para cada 1.000 hab"
+            elif key in ["escolaridade", "expec_vida"]:                
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)} anos"
+            elif key in ["pop_fav", "dom_semi_inadeq"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)
+            elif key == "idh":
+                if not isinstance(value, (float, int)):
+                    data[key] = "—"
+                elif value >= 0.800:
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Muito Alto)"
+                elif 0.700 <= value < 0.800:
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Alto)"
+                elif 0.550 <= value < 0.700:
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Médio)"
+                else:
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Baixo)"
+                
+        return data
+
+    @property
+    def formatted_data_df(self) -> pd.DataFrame:
+        return pd.DataFrame([self.formatted_data_dict])
 
 class ProjectInfo(BaseModel):
     name: str
