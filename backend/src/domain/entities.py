@@ -199,9 +199,7 @@ class MunicipalIndicatorsReport(BaseModel):
                 if not isinstance(value, (float, int)):
                     data[key] = "—"
                 else:
-                    value = value * 1000000
-                    value = int(value)
-                    data[key] = CommonBusinessRules.brazilian_formatted_value(value)
+                    data[key] = CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)
             elif key in ["leito_hab", "prof_hab"]:
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} para cada 1.000 hab"
             elif key in ["escolaridade", "expec_vida"]:                
