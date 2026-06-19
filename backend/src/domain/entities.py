@@ -185,13 +185,15 @@ class MunicipalIndicatorsReport(BaseModel):
                     pib_str = pib_str.replace(".", ",")
                     
                 data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(float(NumberFormattingProcessing.parse_to_decimal(pib_str)))}"
+            elif key == "renda_media":
+                data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(value)}"
             elif key == "densidade_urb":
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} hab/km²"
             elif key in ["pop_urb_pct", "pop_rural_pct", "mulheres", "pretos_pardos", "pop_inf", "pop_idosa", "imigrantes", "indigenas", "quilombolas", "alfabet", "cob_vacinal"]:
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
             elif key in ["bolsa_familia"]:
-                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% das famílias" 
-            elif key in ["renda_media", "firjan", "acesso_agua2", "acesso_esgoto", "acesso_energia", "acesso_lixo"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% das famílias pobres" 
+            elif key in ["firjan", "acesso_agua2", "acesso_esgoto", "acesso_energia", "acesso_lixo"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value(value)
             elif key in ["pop_urb_pessoas", "pop_rural_pessoas"]:
                 if not isinstance(value, (float, int)):
