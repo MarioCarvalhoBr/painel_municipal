@@ -444,25 +444,19 @@
                                                           </g>
                                                         </g>
 
-                                                       
-
-                                                        <g id="shape-d97cc4b4-ac8b-5243-962f-07635738a6b5">
-                                                          
-
-                                                          <defs>
-                                                            <pattern patternUnits="userSpaceOnUse" x="208" y="181.72996520996094" width="13" height="15" id="fill-0-render-3726">
-                                                              <g>
-                                                                <image id="fill-image-render-3726-0" src="./imgs/pagina2/link.png" href="./imgs/pagina2/link.png" preserveAspectRatio="xMidYMid slice" width="13" height="15" opacity="1"></image>
-                                                              </g>
-                                                            </pattern>
-                                                          </defs>
-                                                          
-                                                          <g class="fills" id="fills-d97cc4b4-ac8b-5243-962f-07635738a6b5" style="display: block;">
-                                                            <rect rx="0" ry="0" x="208" y="181.72996520996094" transform="matrix(1.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000)" width="13" height="15" fill="url(#fill-0-render-3726)"></rect>
-                                                          </g>
+                                                       <g id="shape-d97cc4b4-ac8b-5243-962f-07635738a6b5">
+                                                            <a href="{{ risks_record[0].risk_url }}" target="_blank" rel="noopener noreferrer">
+                                                                <image 
+                                                                    x="208" 
+                                                                    y="181.72996520996094" 
+                                                                    width="13" 
+                                                                    height="15" 
+                                                                    href="./imgs/pagina2/link.png" 
+                                                                    preserveAspectRatio="xMidYMid meet" 
+                                                                    style="image-rendering: high-quality;">
+                                                                </image>
+                                                            </a>
                                                         </g>
-
-
 
                                                       </g>
                                                     </g>
@@ -6788,7 +6782,8 @@
           capacidadeAdaptativaColor: item['Capacidade adaptativa_color'],
           
           // Extra: Passando a imagem também, caso o frontend queira renderizar dinamicamente
-          iconUrl: item.imageurl 
+          iconUrl: item.imageurl,
+          riskUrl: item.risk_url
         };
       });
 
