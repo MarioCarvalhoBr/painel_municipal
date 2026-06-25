@@ -329,18 +329,19 @@ body {
 /* 0% do município */
 .c-0-do-muni-93c543ce124c {
   position: absolute;
-  left: 174px;
+  left: 112px;
   top: 3px;
-  width: 99.29px;
+  width: 161px;
   box-shadow: ;
   mix-blend-mode: normal;
 }
 .c-0-do-muni-93c543ce124c .root-0 {
-  
-  
+
+
   display: flex;
   white-space: break-spaces;
   align-items: flex-start;
+  justify-content: flex-end;
 }
 .c-0-do-muni-93c543ce124c .root-0-paragraph-set-0 {
   display: inline-flex;
@@ -450,19 +451,20 @@ body {
 /* 8% do município */
 .c-8-do-muni-fa3b1b897710 {
   position: absolute;
-  left: 254px;
+  left: 112px;
+  width: 161px;
   top: 3px;
   height: 15px;
   box-shadow: ;
   mix-blend-mode: normal;
-  justify-content: flex-end;
 }
 .c-8-do-muni-fa3b1b897710 .root-0 {
-  
-  
+
+
   display: flex;
   white-space: break-spaces;
   align-items: flex-start;
+  justify-content: flex-end;
 }
 .c-8-do-muni-fa3b1b897710 .root-0-paragraph-set-0 {
   display: inline-flex;
@@ -573,18 +575,20 @@ body {
 /* 30% */
 .c-30-b0066a16e12b {
   position: absolute;
-  left: 232px;
+  left: 112px;
+  width: 161px;
   top: 3px;
   height: 15px;
   box-shadow: ;
   mix-blend-mode: normal;
 }
 .c-30-b0066a16e12b .root-0 {
-  
-  
+
+
   display: flex;
   white-space: break-spaces;
   align-items: flex-start;
+  justify-content: flex-end;
 }
 .c-30-b0066a16e12b .root-0-paragraph-set-0 {
   display: inline-flex;
@@ -695,18 +699,20 @@ body {
 /* 10% do município */
 .c-10-do-mun-6f0b24c146f9 {
   position: absolute;
-  left: 152px;
+  left: 112px;
+  width: 161px;
   top: 3px;
   height: 15px;
   box-shadow: ;
   mix-blend-mode: normal;
 }
 .c-10-do-mun-6f0b24c146f9 .root-0 {
-  
-  
+
+
   display: flex;
   white-space: break-spaces;
   align-items: flex-start;
+  justify-content: flex-end;
 }
 .c-10-do-mun-6f0b24c146f9 .root-0-paragraph-set-0 {
   display: inline-flex;
@@ -769,18 +775,20 @@ body {
 /* Amazônia */
 .amaznia-77bab04f1fa6 {
   position: absolute;
-  left: 192px;
+  left: 112px;
+  width: 161px;
   top: 3px;
   height: 15px;
   box-shadow: ;
   mix-blend-mode: normal;
 }
 .amaznia-77bab04f1fa6 .root-0 {
-  
-  
+
+
   display: flex;
   white-space: break-spaces;
   align-items: flex-start;
+  justify-content: flex-end;
 }
 .amaznia-77bab04f1fa6 .root-0-paragraph-set-0 {
   display: inline-flex;

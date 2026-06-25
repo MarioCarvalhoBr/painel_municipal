@@ -286,6 +286,8 @@ class MunicipalResilienceProfileReport(BaseModel):
                 
             elif key in ["estiagem_incend", "geohidro", "tornad_vendav", "obitos", "desabrig", "desaloj"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
+            elif key in ["danos_prej_tot"]:
+                data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(value)}"
                 
         return data
 
