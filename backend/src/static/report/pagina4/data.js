@@ -1,4 +1,4 @@
-// AdaptaBrasil — Página 4 (Diagnóstico municipal: desastres, gestão e uso do solo)
+// AdaptaBrasil — Página 4 revisada (Diagnóstico municipal: desastres, gestão e uso do solo)
 // Valores dinâmicos da tela. Futuramente alimentados por uma API.
 // Os rótulos/títulos fixos permanecem estáticos no index.html.
 window.PAGE_DATA = {
@@ -22,7 +22,7 @@ window.PAGE_DATA = {
     terrasIndigenas: '0% do município',
   },
 
-  // Painel "Gestão municipal" — ordem visual do protótipo.
+  // Painel "gestão municipal" — ordem visual do protótipo revisado.
   // status: 'possui' (POSSUI) | 'naoPossui' (NÃO POSSUI) | 'ausente' (AUSENTE)
   gestaoMunicipal: [
     { plano: 'Plano Diretor incluindo Proteção e Defesa Civil', status: 'possui' },
@@ -33,6 +33,7 @@ window.PAGE_DATA = {
     { plano: 'Plano Municipal de Resíduos Sólidos', status: 'possui' },
     { plano: 'Plano Municipal de Habitação', status: 'naoPossui' },
     { plano: 'Plano Municipal de Transporte', status: 'ausente' },
+    { plano: 'Programa Cidades Resilientes', status: 'ausente' },
   ],
 
   // Painel "Desastres"
@@ -46,7 +47,7 @@ window.PAGE_DATA = {
       desalojados: '200',
       danosPrejuizos: 'R$24,5 Mi',
     },
-    // Monitoramento de desastres (CEMADEN) — placeholders, sem valores no protótipo.
+    // Monitoramento de desastres (CEMADEN) — sem valores no protótipo (campos vazios).
     cemaden: {
       escolasAreasRisco: '',
       pessoasAreasRisco: '',
