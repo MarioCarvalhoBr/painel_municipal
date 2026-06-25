@@ -229,6 +229,70 @@ class MunicipalIndicatorsReport(BaseModel):
     def formatted_data_df(self) -> pd.DataFrame:
         return pd.DataFrame([self.formatted_data_dict])
 
+class MunicipalResilienceProfile(BaseModel):
+    # Identificação do município
+    county_id: Optional[int] = None
+    
+    # Uso do solo
+    bioma: Optional[str] = None
+    veg_natural: Optional[float] = None
+    agropec: Optional[float] = None
+    ucs: Optional[str] = None
+    ti: Optional[str] = None
+    # TODO: Missing fields for : Uso e cobertura da terra
+    
+    # gestão municipal
+    plano_saneam: Optional[str] = None
+    plano_residuos: Optional[str] = None
+    plano_drenagem: Optional[str] = None
+    plano_transporte: Optional[str] = None
+    plano_hab: Optional[str] = None
+    plano_diretor: Optional[str] = None
+    plano_rrd: Optional[str] = None
+    plano_conting: Optional[str] = None
+    cid_resilientes: Optional[str] = None
+    
+    # Desastres
+    estiagem_incend: Optional[float] = None
+    geohidro: Optional[float] = None
+    tornad_vendav: Optional[float] = None
+    obitos: Optional[float] = None
+    desabrig: Optional[float] = None
+    desaloj: Optional[float] = None
+    danos_prej_tot: Optional[float] = None
+    
+    # Monitoramento de desastres (CEMADEN)
+    escola_risco: Optional[str] = None
+    eventos_geohidro: Optional[float] = None
+    pessoas_area_risco_cemaden: Optional[float] = None
+    
+    # TODO: Missing fields for : Áreas de risco
+
+class MunicipalResilienceProfileReport(BaseModel):
+    municipal_resilience_profile: MunicipalResilienceProfile
+    
+    @property
+    def formatted_data_dict(self) -> Dict[str, Any]:
+        data = self.municipal_resilience_profile.dict()
+        for key, value in data.items():
+            if value is None:
+                data[key] = "—"
+                continue
+            
+            if key in ["veg_natural"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% do município"
+            elif key in ["agropec"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
+                
+            elif key in ["estiagem_incend", "geohidro", "tornad_vendav", "obitos", "desabrig", "desaloj"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
+                
+        return data
+
+    @property
+    def formatted_data_df(self) -> pd.DataFrame:
+        return pd.DataFrame([self.formatted_data_dict])
+    
 class ProjectInfo(BaseModel):
     name: str
     version: str

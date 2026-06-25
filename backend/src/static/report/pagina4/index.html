@@ -23,8 +23,7 @@
     </div>
     <!-- text: Desastres -->
     <div class="shape text desastres-aa4a843a4c37">
-      <div class="text-node-html" id="html-t    <base href="{{ base_url }}">
-ext-node-b8d95b44-55fe-5e78-addb-aa4a843a4c37" data-x="552.112548828125" data-y="17">
+      <div class="text-node-html" id="html-text-node-b8d95b44-55fe-5e78-addb-aa4a843a4c37" data-x="552.112548828125" data-y="17">
         <div class="root rich-text root-0" xmlns="http://www.w3.org/1999/xhtml">
           <div class="paragraph-set root-0-paragraph-set-0">
             <p class="paragraph root-0-paragraph-set-0-paragraph-0" dir="auto"><span class="text-node root-0-paragraph-set-0-paragraph-0-text-0">Desastres</span></p>
@@ -833,5 +832,51 @@ ext-node-b8d95b44-55fe-5e78-addb-aa4a843a4c37" data-x="552.112548828125" data-y=
 </div>
     <script src="./data.js"></script>
     <script src="./shared/js/app.js"></script>
+
+    <script>
+      // Imprimir o conteúdo de window.PAGE_DATA que vem de data.js para o console
+      console.log('PAGE_DATA (Antes):', window.PAGE_DATA);
+
+      // Injetando dados básicos de localização via Jinja2
+      window.PAGE_DATA.location.city = "{{ county_record.county }}";
+      window.PAGE_DATA.location.state = "{{ county_record.state }}";
+
+      // Painel "Uso do solo"
+      window.PAGE_DATA.usoDoSolo.bioma = "{{ municipal_resilience_profile_record.bioma }}";
+      window.PAGE_DATA.usoDoSolo.vegetacaoNatural = "{{ municipal_resilience_profile_record.veg_natural }}";
+      window.PAGE_DATA.usoDoSolo.agropecuaria = "{{ municipal_resilience_profile_record.agropec }}";
+      window.PAGE_DATA.usoDoSolo.unidadesConservacao = "{{ municipal_resilience_profile_record.ucs }}";
+      window.PAGE_DATA.usoDoSolo.terrasIndigenas = "{{ municipal_resilience_profile_record.ti }}";
+
+       // Painel "gestão municipal" — ordem visual do protótipo revisado.
+      // V → possui (POSSUI.png) | ? → ausente (AUSENTE.png) | demais → naoPossui (NAO POSSUI.png)
+      
+      window.PAGE_DATA.gestaoMunicipal[0].status = "{{ 'possui' if municipal_resilience_profile_record.plano_diretor == 'V' else ('ausente' if municipal_resilience_profile_record.plano_diretor == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[1].status = "{{ 'possui' if municipal_resilience_profile_record.plano_drenagem == 'V' else ('ausente' if municipal_resilience_profile_record.plano_drenagem == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[2].status = "{{ 'possui' if municipal_resilience_profile_record.plano_conting == 'V' else ('ausente' if municipal_resilience_profile_record.plano_conting == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[3].status = "{{ 'possui' if municipal_resilience_profile_record.plano_rrd == 'V' else ('ausente' if municipal_resilience_profile_record.plano_rrd == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[4].status = "{{ 'possui' if municipal_resilience_profile_record.plano_saneam == 'V' else ('ausente' if municipal_resilience_profile_record.plano_saneam == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[5].status = "{{ 'possui' if municipal_resilience_profile_record.plano_residuos == 'V' else ('ausente' if municipal_resilience_profile_record.plano_residuos == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[6].status = "{{ 'possui' if municipal_resilience_profile_record.plano_hab == 'V' else ('ausente' if municipal_resilience_profile_record.plano_hab == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[7].status = "{{ 'possui' if municipal_resilience_profile_record.plano_transporte == 'V' else ('ausente' if municipal_resilience_profile_record.plano_transporte == '?' else 'naoPossui') }}";
+      window.PAGE_DATA.gestaoMunicipal[8].status = "{{ 'possui' if municipal_resilience_profile_record.cid_resilientes == 'Sim' else ('ausente' if municipal_resilience_profile_record.cid_resilientes == '?' else 'naoPossui') }}";
+
+      // Painel "Desastres"
+      window.PAGE_DATA.desastres.historico.estiagensIncendios = "{{ municipal_resilience_profile_record.estiagem_incend }}";
+      window.PAGE_DATA.desastres.historico.geoHidrologicos = "{{ municipal_resilience_profile_record.geohidro }}";
+      window.PAGE_DATA.desastres.historico.tornadosVendavais = "{{ municipal_resilience_profile_record.tornad_vendav }}";
+      window.PAGE_DATA.desastres.historico.obitos = "{{ municipal_resilience_profile_record.obitos }}";
+      window.PAGE_DATA.desastres.historico.desabrigados = "{{ municipal_resilience_profile_record.desabrig }}";
+      window.PAGE_DATA.desastres.historico.desalojados = "{{ municipal_resilience_profile_record.desaloj }}";
+      window.PAGE_DATA.desastres.historico.danosPrejuizos = "{{ municipal_resilience_profile_record.danos_prej_tot }}";
+
+      // Monitoramento de desastres (CEMADEN) — sem valores no protótipo (campos vazios).
+      window.PAGE_DATA.desastres.cemaden.escolasAreasRisco = "{{ municipal_resilience_profile_record.escola_risco }}";
+      window.PAGE_DATA.desastres.cemaden.pessoasAreasRisco = "{{ municipal_resilience_profile_record.pessoas_area_risco_cemaden }}";
+      window.PAGE_DATA.desastres.cemaden.totalEventos = "{{ municipal_resilience_profile_record.eventos_geohidro }}";
+
+
+      console.log('PAGE_DATA (Depois da injeção):', window.PAGE_DATA);
+    </script>
   </body>
 </html>

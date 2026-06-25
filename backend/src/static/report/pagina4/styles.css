@@ -450,11 +450,12 @@ body {
 /* 8% do município */
 .c-8-do-muni-fa3b1b897710 {
   position: absolute;
-  left: 180px;
+  left: 254px;
   top: 3px;
   height: 15px;
   box-shadow: ;
   mix-blend-mode: normal;
+  justify-content: flex-end;
 }
 .c-8-do-muni-fa3b1b897710 .root-0 {
   
@@ -572,7 +573,7 @@ body {
 /* 30% */
 .c-30-b0066a16e12b {
   position: absolute;
-  left: 248px;
+  left: 232px;
   top: 3px;
   height: 15px;
   box-shadow: ;
@@ -694,7 +695,7 @@ body {
 /* 10% do município */
 .c-10-do-mun-6f0b24c146f9 {
   position: absolute;
-  left: 174px;
+  left: 152px;
   top: 3px;
   height: 15px;
   box-shadow: ;
@@ -768,7 +769,7 @@ body {
 /* Amazônia */
 .amaznia-77bab04f1fa6 {
   position: absolute;
-  left: 217px;
+  left: 192px;
   top: 3px;
   height: 15px;
   box-shadow: ;
