@@ -31,36 +31,20 @@
         </div>
       </div>
     </div>
+    
     <!-- group: Áreas de risco -->
     <div class="group reas-de-r-22f09667cdef">
+      
       <!-- path: mapa -->
       <div class="shape path mapa-edb8a7157e72">
-        <svg width="358" xmlns="http://www.w3.org/2000/svg" height="214" id="screenshot-e9442671-6740-5344-b852-edb8a7157e72" viewBox="427 377 358 214" style="-webkit-print-color-adjust::exact" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1">
-          <g id="shape-e9442671-6740-5344-b852-edb8a7157e72" style="opacity:1">
-            <defs>
-              <pattern patternUnits="userSpaceOnUse" x="427" y="377" width="358" height="214" patternTransform="matrix(1.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000)" id="fill-0-render-1870">
-                <g>
-                  <image id="fill-image-render-1870-0" href="./imgs/mapa.png" data-bind-map="areasRisco" preserveAspectRatio="xMidYMid slice" width="358" height="214" opacity="1"></image>
-                </g>
-              </pattern>
-            </defs>
-            <g class="fills" id="fills-e9442671-6740-5344-b852-edb8a7157e72">
-              <path d="M427,377L785,377L785,591L427,591L427,377Z" fill="url(#fill-0-render-1870)" fill-rule="nonzero"></path>
-            </g>
-            <g fill-rule="nonzero" id="strokes-f860547d-e799-8086-8008-39be337808cd-e9442671-6740-5344-b852-edb8a7157e72" class="strokes">
-              <g class="inner-stroke-shape">
-                <defs>
-                  <clipPath id="inner-stroke-render-1870-e9442671-6740-5344-b852-edb8a7157e72-0">
-                    <use href="#stroke-shape-render-1870-e9442671-6740-5344-b852-edb8a7157e72-0"></use>
-                  </clipPath>
-                  <path d="M427,377L785,377L785,591L427,591L427,377Z" style="fill:none;fill-opacity:none;stroke-width:2;stroke:#6d797a;stroke-opacity:1" id="stroke-shape-render-1870-e9442671-6740-5344-b852-edb8a7157e72-0"></path>
-                </defs>
-                <use href="#stroke-shape-render-1870-e9442671-6740-5344-b852-edb8a7157e72-0" clip-path="url(&#x27;#inner-stroke-render-1870-e9442671-6740-5344-b852-edb8a7157e72-0&#x27;)"></use>
-              </g>
-            </g>
-          </g>
-        </svg>
+        <!--
+          Rendered as a plain <img> (instead of an SVG <pattern> fill) so Chromium
+          embeds the bitmap at its native resolution in the PDF. SVG pattern/image
+          fills get rasterized at screen DPI during page.pdf(), which made the map blurry.
+        -->
+        <img id="fill-image-render-1870-0" src="./imgs/mapa.png" data-bind-map="areasRisco" alt="Mapa de áreas de risco do município">
       </div>
+
       <!-- rect: Rectangle 96 -->
       <div class="shape rect rectangle-cef821a97c2e">
       </div>

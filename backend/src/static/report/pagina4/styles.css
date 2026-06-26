@@ -120,7 +120,7 @@ body {
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 177.93px;
+  width: 357.78px;
   height: 40px;
   background: #d9d9d9FF;
   border: 1px solid #6d797aFF;
@@ -3349,11 +3349,16 @@ body {
 }
 
 /* mapa */
-.mapa-edb8a7157e72 > svg {
+.mapa-edb8a7157e72 > img {
   position: absolute;
   top: 0px;
   left: 0px;
-  transform: translate(0px,0px);
+  width: 358px;
+  height: 214px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid #6d797a;
+  box-sizing: border-box;
 }
 .mapa-edb8a7157e72 {
   position: absolute;

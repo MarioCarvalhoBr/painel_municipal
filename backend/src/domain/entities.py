@@ -1,6 +1,7 @@
 # backend/src/domain/entities.py
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
+from decimal import Decimal
 import pandas as pd
 
 from ..helpers.common.formatting.number_formatting_processing import NumberFormattingProcessing
@@ -40,10 +41,36 @@ class CommonBusinessRules(BaseModel):
         
         if isinstance(value, (float, int)):
             return NumberFormattingProcessing.format_number_brazilian_ignore_two_zeros(int(truncated_value))
-        
+
         return "—"
-    
-    
+
+    @staticmethod
+    def brazilian_formatted_value_currency_short(value: Optional[float | int]) -> Optional[str]:
+        """
+        Format a monetary value in short scale (Mi/Bi) with Brazilian conventions.
+
+        >= 1.000.000.000: divides by 1 Bi, truncates to 2 decimal places -> 'R$ 2,00 Bi'
+        >= 1.000.000:     divides by 1 Mi, truncates to 2 decimal places -> 'R$ 2,00 Mi'
+        Smaller values fall back to the plain Brazilian currency format.
+        """
+        if value is None:
+            return "—"
+
+        abs_value = abs(value)
+        if abs_value >= 1_000_000_000:
+            scaled = Decimal(str(value)) / Decimal(1_000_000_000)
+            suffix = "Bi"
+        elif abs_value >= 1_000_000:
+            scaled = Decimal(str(value)) / Decimal(1_000_000)
+            suffix = "Mi"
+        else:
+            return f"R$ {CommonBusinessRules.brazilian_formatted_value(value)}"
+
+        truncated_value = NumberFormattingProcessing.to_decimal_truncated(scaled, value_to_ignore=None, precision=2)
+        formatted_value = NumberFormattingProcessing.format_number_brazilian(float(truncated_value))
+        return f"R$ {formatted_value} {suffix}"
+
+
 
 class County(BaseModel):
     county_id: int
@@ -51,6 +78,10 @@ class County(BaseModel):
     state: str
     region: str
     display: Optional[str] = None
+    
+class CountyImage(BaseModel):
+    county_id: int
+    base64: Optional[str] = None
 
 class RiskFactor(BaseModel):
     risk_id: Optional[int] = None
@@ -153,7 +184,7 @@ class MunicipalIndicators(BaseModel):
     
     # Socioeconomic conditions
     ## IDH and related indicators
-    idh: Optional[float] = None
+    idh: Optional[float] = None # Mudou para idh_m
     renda_media: Optional[float] = None
     escolaridade: Optional[float] = None
     expec_vida: Optional[float] = None
@@ -279,15 +310,12 @@ class MunicipalResilienceProfileReport(BaseModel):
                 data[key] = "—"
                 continue
             
-            if key in ["veg_natural"]:
-                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% do município"
-            elif key in ["agropec"]:
-                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
-                
+            if key in ["veg_natural", "agropec"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% do município"                
             elif key in ["estiagem_incend", "geohidro", "tornad_vendav", "obitos", "desabrig", "desaloj"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
             elif key in ["danos_prej_tot"]:
-                data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(value)}"
+                data[key] = CommonBusinessRules.brazilian_formatted_value_currency_short(value)
             elif key in ["escola_risco", "eventos_geohidro", "pessoas_area_risco_cemaden"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
                 
