@@ -184,7 +184,7 @@ class MunicipalIndicators(BaseModel):
     
     # Socioeconomic conditions
     ## IDH and related indicators
-    idh: Optional[float] = None # Mudou para idh_m
+    idh_m: Optional[float] = None
     renda_media: Optional[float] = None
     escolaridade: Optional[float] = None
     expec_vida: Optional[float] = None
@@ -242,7 +242,7 @@ class MunicipalIndicatorsReport(BaseModel):
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)} anos"
             elif key in ["pop_fav", "dom_semi_inadeq"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)
-            elif key == "idh":
+            elif key == "idh_m":
                 if not isinstance(value, (float, int)):
                     data[key] = "—"
                 elif value >= 0.800:
