@@ -262,7 +262,7 @@ class MunicipalResilienceProfile(BaseModel):
     danos_prej_tot: Optional[float] = None
     
     # Monitoramento de desastres (CEMADEN)
-    escola_risco: Optional[str] = None
+    escola_risco: Optional[float] = None
     eventos_geohidro: Optional[float] = None
     pessoas_area_risco_cemaden: Optional[float] = None
     
@@ -288,6 +288,8 @@ class MunicipalResilienceProfileReport(BaseModel):
                 data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
             elif key in ["danos_prej_tot"]:
                 data[key] = f"R$ {CommonBusinessRules.brazilian_formatted_value(value)}"
+            elif key in ["escola_risco", "eventos_geohidro", "pessoas_area_risco_cemaden"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
                 
         return data
 

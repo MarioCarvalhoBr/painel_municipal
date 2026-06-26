@@ -3452,3 +3452,48 @@ body {
   box-shadow: ;
   mix-blend-mode: normal;
 }
+
+
+
+/* Valor numérico dos campos do CEMADEN (escolas/pessoas/total de eventos) */
+/* Posicionado igual ao protótipo (revisao25-06-26): texto começa em x=736.7 (left 299.7 dentro do grupo). */
+.cemaden-valor {
+  position: absolute;
+  left: 165.44px;
+  width: 161px;
+  top: 3px;
+  height: 15px;
+  mix-blend-mode: normal;
+}
+.cemaden-valor .root-0 {
+  display: flex;
+  white-space: break-spaces;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.cemaden-valor .root-0-paragraph-set-0 {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: inherit;
+  margin-right: 1px;
+  vertical-align: top;
+}
+.cemaden-valor .root-0-paragraph-set-0-paragraph-0 {
+  font-size: 0;
+  line-height: 1.2;
+  margin: 0;
+  text-align: right;
+}
+.cemaden-valor .root-0-paragraph-set-0-paragraph-0-text-0 {
+  color: rgba(0, 0, 0, 1);
+  text-transform: none;
+  line-break: auto;
+  overflow-wrap: initial;
+  white-space: pre;
+  font-size: 12px;
+  font-family: 'Inter';
+  font-weight: 400;
+  font-style: normal;
+  text-rendering: geometricPrecision;
+  caret-color: rgba(0, 0, 0, 1);
+}
