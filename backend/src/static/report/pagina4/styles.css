@@ -166,6 +166,13 @@ body {
   mix-blend-mode: normal;
 }
 
+.link-1abf8154aef4 > a,
+.link-140c6c76f3f3 > a {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
 /* Uso e cobertura da terra: */
 .uso-e-cobe-f39e2de24f32 {
   position: absolute;
