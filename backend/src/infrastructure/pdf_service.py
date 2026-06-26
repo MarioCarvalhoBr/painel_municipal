@@ -76,6 +76,11 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
 
                 # Generates the PDF for this page
                 pdf_bytes = await self.generate_single_page_pdf(page_path, context, config)
+                
+                # Se for a pagina4 imprime as 50 ultimas linhas do log
+                print("Últimas 50 linhas do log:")
+                for line in context.get("log_lines", [])[-50:]:
+                    print(line)
 
                 # Adds to the merger
                 pdf_file = io.BytesIO(pdf_bytes)

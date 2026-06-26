@@ -5,6 +5,7 @@ code_test.py
 my_codes.py
 erase_docker.sh
 output/
+backend/src/static/report/pagina4/imgs/mapas/*
 
 # Logs
 *.log

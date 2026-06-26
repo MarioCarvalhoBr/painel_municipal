@@ -79,10 +79,6 @@ class County(BaseModel):
     region: str
     display: Optional[str] = None
     
-class CountyImage(BaseModel):
-    county_id: int
-    base64: Optional[str] = None
-
 class RiskFactor(BaseModel):
     risk_id: Optional[int] = None
     detail_id: Optional[int] = None
@@ -263,6 +259,7 @@ class MunicipalIndicatorsReport(BaseModel):
 class MunicipalResilienceProfile(BaseModel):
     # Identificação do município
     county_id: Optional[int] = None
+    geocode: Optional[int] = None
     
     # Uso do solo
     bioma: Optional[str] = None
