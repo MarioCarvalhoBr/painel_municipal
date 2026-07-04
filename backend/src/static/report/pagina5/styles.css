@@ -3106,6 +3106,16 @@ body {
   border-bottom-right-radius: 8px;
 }
 
+/* Imagem do mapa do município (com fallback via onerror no JS) */
+.grafico-temperatura-municipio-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
 /* NOME DO MUNICIPIO */
 .n-o-m-e-d-o-m-u-02b353233d1e {
   position: absolute;
