@@ -302,7 +302,37 @@
     // Popular o rows com o {{climate_projection_record}} do Jinja2
     // Mude apenas os dados
     // TODO AQUI: 
-    
+    // Popular o rows com o {{climate_projection_record}} do Jinja2
+    const cp = {{ climate_projection_record | tojson | safe }};
+
+    // Configuração: [label, icone, prefixo dos campos no Python]
+    const indicadores = [
+      ["Temperatura média",                             "icone-temp-media",      "temp_med"],
+      ["Temperatura mínima",                            "icone-temp-minima",     "temp_min"],
+      ["Temperatura máxima",                            "icone-temp-maxima",     "temp_max"],
+      ["Números máximo de dias secos consecutivos",     "icone-dias-secos",      "dias_secos"],
+      ["Números máximo de dias de chuva consecutivos",  "icone-dias-chuva",      "dias_chuva"],
+      ["Intensidade de precipitação",                   "icone-intensidade",     "precip"],
+      ["Chuvas extremas",                               "icone-chuvas-extremas", "chuva_ext"],
+      ["Nível do mar",                                  "icone-nivel-do-mar",    "nivel_mar"]
+    ];
+
+    const rows = [];
+    for (const [label, icone, campo] of indicadores) {
+      rows.push({
+        label: label,
+        icon: `./imgs/${icone}.png`,
+        presente:   cp[campo]            ?? '—',
+        tendencia:  cp[`${campo}_tend`]  ?? '—',
+        otimista:   cp[`${campo}_otim`]  ?? '—',
+        pessimista: cp[`${campo}_pes`]   ?? '—'
+      });
+    }
+
+    window.PAGE_DATA.projecao.rows = rows;
+
+    console.log('PAGE_DATA (Depois):', window.PAGE_DATA);
+
     
     </script>
   </body>

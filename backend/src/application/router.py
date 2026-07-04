@@ -96,9 +96,18 @@ async def download_report_pdf(
     municipal_report_record = MunicipalIndicatorsReport(municipal_indicators=municipal_report_data).formatted_data_dict
     municipal_resilience_profile_record = MunicipalResilienceProfileReport(municipal_resilience_profile=municipal_resilience_profile_data).formatted_data_dict
     climate_projection_record = ClimateProjectionReport(climate_projection=climate_projection_data).formatted_data_dict
+    pure_climate_projection_record = ClimateProjectionReport(climate_projection=climate_projection_data).pure_data_dict
     
     # if municipal_resilience_profile_record: print(municipal_resilience_profile_record)
-    if climate_projection_record: print(climate_projection_record)
+    if pure_climate_projection_record: print(pure_climate_projection_record)
+    print(f"---"*30)
+    # Print only dias_secos_tend from climate_projection_record and pure_climate_projection_record for debugging
+    if climate_projection_record:
+        print(f"--- Climate Projection Record (Formatted) ---")
+        print(f"dias_secos_tend: {climate_projection_record.get('dias_secos_tend')}")
+    if pure_climate_projection_record:
+        print(f"--- Climate Projection Record (Pure) ---")
+        print(f"dias_secos_tend: {pure_climate_projection_record.get('dias_secos_tend')}")
 
     context = {
         # Tables Data

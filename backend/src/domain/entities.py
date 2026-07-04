@@ -337,6 +337,10 @@ class ClimateProjection(BaseModel):
 class ClimateProjectionReport(BaseModel):
     climate_projection: ClimateProjection
     
+    
+    @property
+    def pure_data_dict(self) -> Dict[str, Any]:
+        return self.climate_projection.dict()
     @property
     def formatted_data_dict(self) -> Dict[str, Any]:
         data = self.climate_projection.dict()
