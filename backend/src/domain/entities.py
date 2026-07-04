@@ -355,7 +355,7 @@ class ClimateProjectionReport(BaseModel):
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} °C"
             elif key in ["dias_secos", "dias_secos_tend", "dias_secos_otim", "dias_secos_pes",
                          "dias_chuva", "dias_chuva_tend", "dias_chuva_otim", "dias_chuva_pes"]:
-                data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
+                data[key] = CommonBusinessRules.brazilian_formatted_value(value)
             elif key in ["chuva_ext", "chuva_ext_tend", "chuva_ext_otim", "chuva_ext_pes",
                          "precip", "precip_tend", "precip_otim", "precip_pes"]:
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} mm"
