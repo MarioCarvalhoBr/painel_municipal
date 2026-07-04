@@ -174,7 +174,6 @@ class MunicipalIndicators(BaseModel):
     pretos_pardos: Optional[float] = None
     pop_inf: Optional[float] = None
     pop_idosa: Optional[float] = None
-    imigrantes: Optional[float] = None
     indigenas: Optional[float] = None
     quilombolas: Optional[float] = None
     
@@ -204,6 +203,13 @@ class MunicipalIndicators(BaseModel):
     acesso_esgoto: Optional[float] = None
     acesso_energia: Optional[float] = None
     acesso_lixo: Optional[float] = None
+    
+    # MOBILIDADE POPULATION
+    imig_regist: Optional[float] = None
+    solic_refugio: Optional[float] = None
+    imigrantes: Optional[float] = None
+    tx_turismo: Optional[float] = None
+    
 
 class MunicipalIndicatorsReport(BaseModel):
     municipal_indicators: MunicipalIndicators
@@ -249,7 +255,13 @@ class MunicipalIndicatorsReport(BaseModel):
                     data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Médio)"
                 else:
                     data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Baixo)"
-                
+            
+            elif key in ["imig_regist"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_value(value)
+            elif key in ["solic_refugio", "imigrantes", "tx_turismo"]:
+                data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
+            
+            
         return data
 
     @property

@@ -58,7 +58,9 @@ class PlaywrightPdfService(BasePdfService, PdfServiceInterface):
                 await page.goto(f"file://{tmp_file_path}", wait_until="networkidle")
                 
                 # Uses the page-specific configuration
-                pdf_bytes = await page.pdf(**config)
+                pdf_config = dict(config)
+                pdf_config.setdefault("prefer_css_page_size", True)
+                pdf_bytes = await page.pdf(**pdf_config)
             finally:
                 if os.path.exists(tmp_file_path):
                     os.remove(tmp_file_path)
