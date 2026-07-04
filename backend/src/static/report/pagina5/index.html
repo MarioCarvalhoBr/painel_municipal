@@ -35,6 +35,7 @@
   <div class="group t-e-m-p-e-r-a-t-u-r-63694c54f7f3">
     <!-- path: Rectangle 58 -->
     <div class="shape path rectangle-16b2d4aa6c02" data-bind-bg="mapa.image">
+        <img id="mapa-temperatura-municipio-img" class="mapa-temperatura-municipio-img" alt="Mapa Temperatura">
     </div>
     <!-- group: temperatura maxima da superficie a -->
     <div class="group temperatur-fbf8825173b8">
@@ -57,7 +58,7 @@
   <div class="group t-e-m-p-e-r-a-t-u-r-565785878891">
     <!-- path: Rectangle 58 -->
     <div class="shape path rectangle-662faf6c41fb">
-        <img id="grafico-temperatura-municipio-img" class="grafico-temperatura-municipio-img" alt="Mapa do município">
+        <img id="grafico-temperatura-municipio-img" class="grafico-temperatura-municipio-img" alt="Gráfico Temperatura">
     </div>
     <!-- group: temperatura maxima da superficie a -->
     <div class="group temperatur-34ac9781e179">
@@ -351,6 +352,28 @@
         mapImg.src = fallbackSrc;
       };
       mapImg.src = "./imgs/graficos_temperatura/" + geocode + ".png";
+      console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapImg.src);
+    })();
+
+    // Mapa do município — usa ./imgs/mapas_temperatura/{geocode}.png se existir;
+    // caso contrário, exibe a imagem padrão "sem mapa" via onerror.
+    (function () {
+      var geocode = "{{ municipal_resilience_profile_record.geocode }}";
+      var mapImg = document.getElementById("mapa-temperatura-municipio-img");
+      if (!mapImg) return;
+
+      var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
+
+      if (!geocode || geocode === "None") {
+        mapImg.src = fallbackSrc;
+        return;
+      }
+
+      mapImg.onerror = function () {
+        mapImg.onerror = null;
+        mapImg.src = fallbackSrc;
+      };
+      mapImg.src = "./imgs/mapas_temperatura/" + geocode + ".png";
       console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapImg.src);
     })();
 
