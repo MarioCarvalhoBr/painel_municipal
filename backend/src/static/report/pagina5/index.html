@@ -139,245 +139,100 @@
       // Injetando dados básicos de localização via Jinja2
       window.PAGE_DATA.location.city = "{{ county_record.county }}";
       window.PAGE_DATA.location.state = "{{ county_record.state }}";
+      const cityStateData = window.PAGE_DATA.location.city + "/" + window.PAGE_DATA.location.state;
 
-      // Injetando dados de projeção climática via Jinja2
-      /*
-      classe do Python: 
-      class ClimateProjection(BaseModel):
-    geocode: Optional[int] = None
-    county_id: Optional[int] = None
-    
-    temp_med: Optional[float] = None
-    temp_med_tend: Optional[float] = None
-    temp_med_otim: Optional[float] = None
-    temp_med_pes: Optional[float] = None
+      const cityStateEl = document.querySelector('[data-bind="location.cityState"]');
+      const curitibaEl = document.querySelector('.curitiba-676df7a77bca');
 
-
-    temp_max: Optional[float] = None
-    temp_max_tend: Optional[float] = None
-    temp_max_otim: Optional[float] = None
-    temp_max_pes: Optional[float] = None
-
-    temp_min_otim: Optional[float] = None
-    temp_min: Optional[float] = None
-    temp_min_tend: Optional[float] = None
-    temp_min_pes: Optional[float] = None
-    
-    dias_secos: Optional[float] = None
-    dias_secos_tend: Optional[float] = None
-    dias_secos_otim: Optional[float] = None
-    dias_secos_pes: Optional[float] = None
-
-
-    dias_chuva: Optional[float] = None
-    dias_chuva_tend: Optional[float] = None
-    dias_chuva_otim: Optional[float] = None
-    dias_chuva_pes: Optional[float] = None
-
-    
-    chuva_ext_pes: Optional[float] = None
-    chuva_ext: Optional[float] = None
-    chuva_ext_tend: Optional[float] = None
-    chuva_ext_otim: Optional[float] = None
-
-    precip: Optional[float] = None
-    precip_tend: Optional[float] = None
-    precip_otim: Optional[float] = None
-    precip_pes: Optional[float] = None
-    
-    nivel_mar: Optional[float] = None
-    nivel_mar_tend: Optional[float] = None
-    nivel_mar_30: Optional[float] = None
-    nivel_mar_50: Optional[float] = None
-
-
-    Variáveis de projeção climática injetadas no JavaScript:
-    window.PAGE_DATA = {
-  "tokens": {
-    "colors": {
-      "primary": "#354F9D",
-      "border": "#6D797A",
-      "subHeader": "#6D797A",
-      "chip": "#D9D9D9",
-      "onPrimary": "#FCFCFC",
-      "surface": "#FFFFFF",
-      "text": "#1E1E1E",
-      "grid": "#FFFFFF"
-    }
-  },
-  "location": {
-    "city": "Curitiba",
-    "state": "Paraná"
-  },
-  // Imagens principais (vazio = mantém a imagem embutida do export).
-  // Preencha com uma URL/caminho para trocar por município (ex.: dados da API).
-  "city": { "image": "" },
-  "mapa": {
-    "title": "temperatura máxima da superfície ",
-    "image": ""
-  },
-  "temperatura": {
-    "title": "temperatura"
-  },
-  "florDeRisco": { "image": "" },
-  "projecao": {
-    "title": "projeção clima ",
-    "columns": {
-      "indicador": "Indicador anual",
-      "presente": "presente",
-      "tendencia": "tendência observada",
-      "futuro": "Cenário Futuro (2050)",
-      "otimista": "otimista",
-      "pessimista": "pessimista"
-    },
-    "rows": [
-      {
-        "label": "Temperatura média",
-        "icon": "./imgs/icone-temp-media.png",
-        "presente": "22º",
-        "tendencia": "+1,5º",
-        "otimista": "+1,5º",
-        "pessimista": "+1,5º"
-      },
-      {
-        "label": "Temperatura mínima",
-        "icon": "./imgs/icone-temp-minima.png",
-        "presente": "10º",
-        "tendencia": "+1,2º",
-        "otimista": "+1,5º",
-        "pessimista": "+1,5º"
-      },
-      {
-        "label": "Temperatura máxima",
-        "icon": "./imgs/icone-temp-maxima.png",
-        "presente": "38º",
-        "tendencia": "+2,2º",
-        "otimista": "+1,5º",
-        "pessimista": "+1,5º"
-      },
-      {
-        "label": "Números máximo de dias secos consecutivos",
-        "icon": "./imgs/icone-dias-secos.png",
-        "presente": "12",
-        "tendencia": "+8",
-        "otimista": "+8",
-        "pessimista": "+8"
-      },
-      {
-        "label": "Números máximo de dias de chuva consecutivos",
-        "icon": "./imgs/icone-dias-chuva.png",
-        "presente": "3",
-        "tendencia": "+1",
-        "otimista": "+8",
-        "pessimista": "+8"
-      },
-      {
-        "label": "Intensidade de precipitação",
-        "icon": "./imgs/icone-intensidade.png",
-        "presente": "10mm",
-        "tendencia": "+2mm",
-        "otimista": "+2mm",
-        "pessimista": "+2mm"
-      },
-      {
-        "label": "Chuvas extremas",
-        "icon": "./imgs/icone-chuvas-extremas.png",
-        "presente": "70mm",
-        "tendencia": "+10mm",
-        "otimista": "+2mm",
-        "pessimista": "+2mm"
-      },
-      {
-        "label": "Nível do mar",
-        "icon": "./imgs/icone-nivel-do-mar.png",
-        "presente": "70mm",
-        "tendencia": "+10mm",
-        "otimista": "+2mm",
-        "pessimista": "+2mm"
+      if (cityStateEl) {
+        cityStateEl.style.fontSize = cityStateData.length > 15 ? '8.9px' : '14px';  
+        if (curitibaEl) {
+          curitibaEl.style.top = '10px';
+          curitibaEl.style.left = '1px';
+          curitibaEl.style.width = '100%';
+        }
+        if (cityStateEl.style.fontSize === '14px') {
+          cityStateEl.style.position = 'absolute';
+          cityStateEl.style.top = '50%';
+          cityStateEl.style.left = '50%';
+          cityStateEl.style.transform = 'translate(-50%, -50%)';
+        } 
       }
-    ]
-  }
-};
+      
+      const cp = {{ climate_projection_record | tojson | safe }};
 
-      */
+      // Configuração: [label, icone, prefixo dos campos no Python]
+      const indicadores = [
+        ["Temperatura média",                             "icone-temp-media",      "temp_med"],
+        ["Temperatura mínima",                            "icone-temp-minima",     "temp_min"],
+        ["Temperatura máxima",                            "icone-temp-maxima",     "temp_max"],
+        ["Números máximo de dias secos consecutivos",     "icone-dias-secos",      "dias_secos"],
+        ["Números máximo de dias de chuva consecutivos",  "icone-dias-chuva",      "dias_chuva"],
+        ["Intensidade de precipitação",                   "icone-intensidade",     "precip"],
+        ["Chuvas extremas",                               "icone-chuvas-extremas", "chuva_ext"],
+        ["Nível do mar",                                  "icone-nivel-do-mar",    "nivel_mar"]
+      ];
 
-    // Popular o rows com o climate_projection_record do Jinja2
-    // Mude apenas os dados
-    // TODO AQUI: 
-    // Popular o rows com o {{climate_projection_record}} do Jinja2
-    const cp = {{ climate_projection_record | tojson | safe }};
-
-    // Configuração: [label, icone, prefixo dos campos no Python]
-    const indicadores = [
-      ["Temperatura média",                             "icone-temp-media",      "temp_med"],
-      ["Temperatura mínima",                            "icone-temp-minima",     "temp_min"],
-      ["Temperatura máxima",                            "icone-temp-maxima",     "temp_max"],
-      ["Números máximo de dias secos consecutivos",     "icone-dias-secos",      "dias_secos"],
-      ["Números máximo de dias de chuva consecutivos",  "icone-dias-chuva",      "dias_chuva"],
-      ["Intensidade de precipitação",                   "icone-intensidade",     "precip"],
-      ["Chuvas extremas",                               "icone-chuvas-extremas", "chuva_ext"],
-      ["Nível do mar",                                  "icone-nivel-do-mar",    "nivel_mar"]
-    ];
-
-    const rows = [];
-    for (const [label, icone, campo] of indicadores) {
-      rows.push({
-        label: label,
-        icon: `./imgs/${icone}.png`,
-        presente:   cp[campo]            ?? '—',
-        tendencia:  cp[`${campo}_tend`]  ?? '—',
-        otimista:   cp[`${campo}_otim`]  ?? '—',
-        pessimista: cp[`${campo}_pes`]   ?? '—'
-      });
-    }
-
-    window.PAGE_DATA.projecao.rows = rows;
-
-    // Mapa do município — usa ./imgs/graficos_temperatura/{geocode}.png se existir;
-    // caso contrário, exibe a imagem padrão "sem mapa" via onerror.
-    (function () {
-      var geocode = "{{ municipal_resilience_profile_record.geocode }}";
-      var mapImg = document.getElementById("grafico-temperatura-municipio-img");
-      if (!mapImg) return;
-
-      var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
-
-      if (!geocode || geocode === "None") {
-        mapImg.src = fallbackSrc;
-        return;
+      const rows = [];
+      for (const [label, icone, campo] of indicadores) {
+        rows.push({
+          label: label,
+          icon: `./imgs/${icone}.png`,
+          presente:   cp[campo]            ?? '—',
+          tendencia:  cp[`${campo}_tend`]  ?? '—',
+          otimista:   cp[`${campo}_otim`]  ?? '—',
+          pessimista: cp[`${campo}_pes`]   ?? '—'
+        });
       }
 
-      mapImg.onerror = function () {
-        mapImg.onerror = null;
-        mapImg.src = fallbackSrc;
-      };
-      mapImg.src = "./imgs/graficos_temperatura/" + geocode + ".png";
-      console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapImg.src);
-    })();
+      window.PAGE_DATA.projecao.rows = rows;
 
-    // Mapa do município — usa ./imgs/mapas_temperatura/{geocode}.png se existir;
-    // caso contrário, exibe a imagem padrão "sem mapa" via onerror.
-    (function () {
-      var geocode = "{{ municipal_resilience_profile_record.geocode }}";
-      var mapImg = document.getElementById("mapa-temperatura-municipio-img");
-      if (!mapImg) return;
+      // Mapa do município — usa ./imgs/graficos_temperatura/{geocode}.png se existir;
+      // caso contrário, exibe a imagem padrão "sem mapa" via onerror.
+      (function () {
+        var geocode = "{{ municipal_resilience_profile_record.geocode }}";
+        var mapImg = document.getElementById("grafico-temperatura-municipio-img");
+        if (!mapImg) return;
 
-      var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
+        var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
 
-      if (!geocode || geocode === "None") {
-        mapImg.src = fallbackSrc;
-        return;
-      }
+        if (!geocode || geocode === "None") {
+          mapImg.src = fallbackSrc;
+          return;
+        }
 
-      mapImg.onerror = function () {
-        mapImg.onerror = null;
-        mapImg.src = fallbackSrc;
-      };
-      mapImg.src = "./imgs/mapas_temperatura/" + geocode + ".png";
-      console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapImg.src);
-    })();
+        mapImg.onerror = function () {
+          mapImg.onerror = null;
+          mapImg.src = fallbackSrc;
+        };
+        mapImg.src = "./imgs/graficos_temperatura/" + geocode + ".png";
+        console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapImg.src);
+      })();
 
-    console.log('PAGE_DATA (Depois):', window.PAGE_DATA);
+      // Mapa do município — usa ./imgs/mapas_temperatura/{geocode}.png se existir;
+      // caso contrário, exibe a imagem padrão "sem mapa" via onerror.
+      (function () {
+        var geocode = "{{ municipal_resilience_profile_record.geocode }}";
+        var mapImg = document.getElementById("mapa-temperatura-municipio-img");
+        if (!mapImg) return;
+
+        var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
+
+        if (!geocode || geocode === "None") {
+          mapImg.src = fallbackSrc;
+          return;
+        }
+
+        mapImg.onerror = function () {
+          mapImg.onerror = null;
+          mapImg.src = fallbackSrc;
+        };
+        mapImg.src = "./imgs/mapas_temperatura/" + geocode + ".png";
+        console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapImg.src);
+      })();
+      
+
+      console.log('PAGE_DATA (Depois):', window.PAGE_DATA);
 
     
     </script>
