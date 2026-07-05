@@ -137,8 +137,8 @@
       console.log('PAGE_DATA (Antes):', window.PAGE_DATA);
 
       // Injetando dados básicos de localização via Jinja2
-      window.PAGE_DATA.location.city = "Vila Bela da Santíssima Trindade"; //"{{ county_record.county }}";
-      window.PAGE_DATA.location.state = "MT"; //"{{ county_record.state }}";
+      window.PAGE_DATA.location.city = "{{ county_record.county }}";
+      window.PAGE_DATA.location.state = "{{ county_record.state }}";
       const cityStateData = window.PAGE_DATA.location.city + "/" + window.PAGE_DATA.location.state;
 
       const cityStateEl = document.querySelector('[data-bind="location.cityState"]');
@@ -155,7 +155,7 @@
           
         } 
       }
-      /*
+      
       
       const cp = {{ climate_projection_record | tojson | safe }};
 
@@ -231,7 +231,7 @@
       
 
       console.log('PAGE_DATA (Depois):', window.PAGE_DATA);
-*/
+
     
     </script>
   </body>
