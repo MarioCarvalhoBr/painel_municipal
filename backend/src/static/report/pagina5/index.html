@@ -137,27 +137,25 @@
       console.log('PAGE_DATA (Antes):', window.PAGE_DATA);
 
       // Injetando dados básicos de localização via Jinja2
-      window.PAGE_DATA.location.city = "{{ county_record.county }}";
-      window.PAGE_DATA.location.state = "{{ county_record.state }}";
+      window.PAGE_DATA.location.city = "Vila Bela da Santíssima Trindade"; //"{{ county_record.county }}";
+      window.PAGE_DATA.location.state = "MT"; //"{{ county_record.state }}";
       const cityStateData = window.PAGE_DATA.location.city + "/" + window.PAGE_DATA.location.state;
 
       const cityStateEl = document.querySelector('[data-bind="location.cityState"]');
       const curitibaEl = document.querySelector('.curitiba-676df7a77bca');
 
       if (cityStateEl) {
-        cityStateEl.style.fontSize = cityStateData.length > 15 ? '8.9px' : '14px';  
+        cityStateEl.style.fontSize = cityStateData.length > 15 ? '9.5px' : '14px';  
         if (curitibaEl) {
           curitibaEl.style.top = '10px';
-          curitibaEl.style.left = '1px';
+          curitibaEl.style.left = '5px';
           curitibaEl.style.width = '100%';
         }
         if (cityStateEl.style.fontSize === '14px') {
-          cityStateEl.style.position = 'absolute';
-          cityStateEl.style.top = '50%';
-          cityStateEl.style.left = '50%';
-          cityStateEl.style.transform = 'translate(-50%, -50%)';
+          
         } 
       }
+      /*
       
       const cp = {{ climate_projection_record | tojson | safe }};
 
@@ -233,7 +231,7 @@
       
 
       console.log('PAGE_DATA (Depois):', window.PAGE_DATA);
-
+*/
     
     </script>
   </body>
