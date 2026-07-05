@@ -236,7 +236,7 @@ class MunicipalIndicatorsReport(BaseModel):
     
     @property
     def formatted_data_dict(self) -> Dict[str, Any]:
-        data = self.municipal_indicators.dict()
+        data = self.municipal_indicators.model_dump()
         for key, value in data.items():
             if value is None:
                 data[key] = "—"
@@ -343,10 +343,10 @@ class ClimateProjectionReport(BaseModel):
     
     @property
     def pure_data_dict(self) -> Dict[str, Any]:
-        return self.climate_projection.dict()
+        return self.climate_projection.model_dump()
     @property
     def formatted_data_dict(self) -> Dict[str, Any]:
-        data = self.climate_projection.dict()
+        data = self.climate_projection.model_dump()
         for key, value in data.items():
             if value is None:
                 data[key] = "—"
@@ -423,7 +423,7 @@ class MunicipalResilienceProfileReport(BaseModel):
     
     @property
     def formatted_data_dict(self) -> Dict[str, Any]:
-        data = self.municipal_resilience_profile.dict()
+        data = self.municipal_resilience_profile.model_dump()
         for key, value in data.items():
             if value is None:
                 data[key] = "—"
