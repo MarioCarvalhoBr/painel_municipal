@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <base href="{{ base_url }}">
-    <link rel="stylesheet" href="./shared/css/fonts.css">
+    <!-- <link rel="stylesheet" href="./shared/css/fonts.css"> -->
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
@@ -193,7 +193,7 @@
         var mapImg = document.getElementById("grafico-temperatura-municipio-img");
         if (!mapImg) return;
 
-        var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
+        var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio.png";
 
         if (!geocode || geocode === "None") {
           mapImg.src = fallbackSrc;
@@ -215,7 +215,7 @@
         var mapImg = document.getElementById("mapa-temperatura-municipio-img");
         if (!mapImg) return;
 
-        var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio-v2.png";
+        var fallbackSrc = "./imgs/imagem-sem-mapa-do-municipio.png";
 
         if (!geocode || geocode === "None") {
           mapImg.src = fallbackSrc;
