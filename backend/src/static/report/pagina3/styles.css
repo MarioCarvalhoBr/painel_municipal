@@ -277,7 +277,7 @@ body {
 /* 90,5% */
 .c-905-871c74d784ec {
   position: absolute;
-  left: 218.03px;
+  left: 202.03px;
   top: 118.93px;
   height: 15px;
   box-shadow: ;
@@ -324,7 +324,7 @@ body {
 /* 90,5% */
 .c-905-e8e631b0e074 {
   position: absolute;
-  left: 218.03px;
+  left: 202.03px;
   top: 95.05px;
   height: 15px;
   box-shadow: ;
@@ -2311,53 +2311,6 @@ body {
   height: 76px;
   box-shadow: ;
   mix-blend-mode: normal;
-}
-
-/* 5 */
-.c-5-1a3959c26c8a {
-  position: absolute;
-  right: 15.11px;
-  top: 54px;
-  height: 14.54px;
-  box-shadow: ;
-  mix-blend-mode: normal;
-}
-.c-5-1a3959c26c8a .root-0 {
-  
-  
-  display: flex;
-  white-space: break-spaces;
-  align-items: flex-start;
-}
-.c-5-1a3959c26c8a .root-0-paragraph-set-0 {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: inherit;
-  min-width: 100%;
-  margin-right: 1px;
-  vertical-align: top;
-}
-.c-5-1a3959c26c8a .root-0-paragraph-set-0-paragraph-0 {
-  font-size: 0;
-  line-height: 1.2000000476837158;
-  margin: 0;
-  text-align: right;
-}
-.c-5-1a3959c26c8a .root-0-paragraph-set-0-paragraph-0-text-0 {
-  color: rgba(0, 0, 0, 1);
-  text-transform: none;
-  
-  line-break: auto;
-  overflow-wrap: initial;
-  white-space: break-spaces;
-  font-size: 12px;
-  text-rendering: geometricPrecision;
-  caret-color: rgba(0, 0, 0, 1);
-  text-decoration: none;
-  letter-spacing: 0px;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
 }
 
 /* Rectangle 95 */
@@ -5320,7 +5273,7 @@ body {
 .link-renda-media        { left: 554.43px; top: 241.13px; }
 .link-alfabetizados      { left: 554.43px; top: 364.13px; }
 .link-favelas            { left: 605.82px; top: 395.51px; }
-.link-arborizacao        { left: 640.75px; top: 442.93px; }
+.link-arborizacao        { left: 733.38px; top: 442.93px; }
 .link-agua               { left: 513.10px; top: 492.31px; }
 .link-esgoto             { left: 589.42px; top: 492.31px; }
 .link-coleta             { left: 739.94px; top: 492.31px; }
