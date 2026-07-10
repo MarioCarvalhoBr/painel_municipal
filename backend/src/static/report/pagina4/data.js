@@ -1,142 +1,57 @@
-// AdaptaBrasil — Página 4 revisada (Diagnóstico municipal).
-// Protótipo Penpot: board "PÁGINA4- revisao25-06-26" (id c6ec6cbc-…-424e8be90c8f).
-// TODOS os campos (títulos, rótulos e valores) são editáveis aqui; futuramente virão de uma API.
+// AdaptaBrasil — Página 4 revisada (Diagnóstico municipal: desastres, gestão e uso do solo)
+// Valores dinâmicos da tela. Futuramente alimentados por uma API.
+// Os rótulos/títulos fixos permanecem estáticos no index.html.
 window.PAGE_DATA = {
-  "tokens": {
-    "colors": {
-      "primary": "#354F9D",
-      "surface": "#FCFCFC",
-      "background": "#F2F2F2",
-      "onSurface": "#1E1E1E"
-    }
-  },
-  "location": {
-    "city": "Curitiba",
-    "state": "Paraná"
-  },
-  "usoDoSolo": {
-    "title": "Uso do solo",
-    "rows": [
-      {
-        "label": "Bioma predominante:",
-        "value": "Amazônia"
-      },
-      {
-        "label": "Vegetação natural:",
-        "value": "10% do município"
-      },
-      {
-        "label": "Agropecuária:",
-        "value": "30%"
-      },
-      {
-        "label": "Unidades de conservação:",
-        "value": "8% do município"
-      },
-      {
-        "label": "Terras indígenas:",
-        "value": "0% do município"
-      }
-    ],
-    "linkLabel": "Uso e cobertura da terra:"
-  },
-  "gestaoMunicipal": {
-    "title": "Gestão municipal",
-    "items": [
-      {
-        "plano": "Plano Diretor incluindo Proteção e Defesa Civil",
-        "status": "possui"
-      },
-      {
-        "plano": "Plano Diretor de Drenagem e Manejo de Águas Pluviais",
-        "status": "possui"
-      },
-      {
-        "plano": "Plano de Contingência",
-        "status": "naoPossui"
-      },
-      {
-        "plano": "Plano Municipal de Redução de Riscos",
-        "status": "naoPossui"
-      },
-      {
-        "plano": "Plano Municipal de Saneamento Básico",
-        "status": "naoPossui"
-      },
-      {
-        "plano": "Plano Municipal de Resíduos Sólidos",
-        "status": "possui"
-      },
-      {
-        "plano": "Plano Municipal de Habitação",
-        "status": "naoPossui"
-      },
-      {
-        "plano": "Plano Municipal de Transporte",
-        "status": "ausente"
-      },
-      {
-        "plano": "Programa Cidades Resilientes",
-        "status": "ausente"
-      }
-    ]
-  },
-  "desastres": {
-    "title": "Desastres",
-    "historico": {
-      "title": "Histórico de desastres",
-      "rows": [
-        {
-          "label": "Estiagens e Incêndios:",
-          "value": "20"
-        },
-        {
-          "label": "Geo-hidrológicos:",
-          "value": "8"
-        },
-        {
-          "label": "Tornados e Vendavais:",
-          "value": "5"
-        },
-        {
-          "label": "Óbitos:",
-          "value": "10"
-        },
-        {
-          "label": "Desabrigados:",
-          "value": "20"
-        },
-        {
-          "label": "Desalojados:",
-          "value": "200"
-        },
-        {
-          "label": "Danos e prejuízos totais:",
-          "value": "R$24,5 Mi"
-        }
-      ]
+  tokens: {
+    colors: {
+      primary: '#354F9D',
+      surface: '#FCFCFC',
+      background: '#F2F2F2',
+      onSurface: '#1E1E1E',
     },
-    "cemaden": {
-      "title": "Monitoramento de desastres",
-      "rows": [
-        {
-          "label": "Escolas públicas em áreas de risco:",
-          "value": "1000"
-        },
-        {
-          "label": "Pessoas em áreas de risco:",
-          "value": "1000"
-        },
-        {
-          "label": "Total de eventos geo-hidrológicos:",
-          "value": "1000"
-        }
-      ]
-    }
   },
-  "areasRisco": {
-    "title": "Áreas de risco",
-    "temMapa": true,
-    "linkHref": "#"
-  }
+
+  location: { city: 'Curitiba', state: 'Paraná' },
+
+  // Painel "Uso do solo"
+  usoDoSolo: {
+    bioma: 'Amazônia',
+    vegetacaoNatural: '10% do município',
+    agropecuaria: '30%',
+    unidadesConservacao: '8% do município',
+    terrasIndigenas: '0% do município',
+  },
+
+  // Painel "gestão municipal" — ordem visual do protótipo revisado.
+  // status: 'possui' (POSSUI) | 'naoPossui' (NÃO POSSUI) | 'ausente' (AUSENTE)
+  gestaoMunicipal: [
+    { plano: 'Plano Diretor incluindo Proteção e Defesa Civil', status: 'possui' },
+    { plano: 'Plano Diretor de Drenagem e Manejo de Águas Pluviais', status: 'possui' },
+    { plano: 'Plano de Contingência', status: 'ausente' },
+    { plano: 'Plano Municipal de Redução de Riscos', status: 'ausente' },
+    { plano: 'Plano Municipal de Saneamento Básico', status: 'ausente' },
+    { plano: 'Plano Municipal de Resíduos Sólidos', status: 'ausente' },
+    { plano: 'Plano Municipal de Habitação', status: 'ausente' },
+    { plano: 'Plano Municipal de Transporte', status: 'ausente' },
+    { plano: 'Programa Cidades Resilientes', status: 'ausente' },
+  ],
+
+  // Painel "Desastres"
+  desastres: {
+    historico: {
+      estiagensIncendios: '20',
+      geoHidrologicos: '8',
+      tornadosVendavais: '5',
+      obitos: '10',
+      desabrigados: '20',
+      desalojados: '200',
+      danosPrejuizos: 'R$24,5 Mi',
+    },
+    // Monitoramento de desastres (CEMADEN) — sem valores no protótipo (campos vazios).
+    cemaden: {
+      escolasAreasRisco: '',
+      pessoasAreasRisco: '',
+      totalEventos: '',
+    },
+  },
 };
