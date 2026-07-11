@@ -28,6 +28,18 @@ class Settings(BaseSettings):
         PAGE_04 = "pagina4"
         PAGE_05 = "pagina5"
     
+    # Records each page's template actually renders (see each pagina's index.html).
+    # download_report_page_pdf uses this to skip database queries whose data would
+    # never appear in the generated PDF. The climate projection query is still run
+    # for every page because its geocode names the downloaded file.
+    page_context_records: Dict[str, List[str]] = {
+        PageName.PAGE_01.value: [],
+        PageName.PAGE_02.value: ["county_record", "risks_record"],
+        PageName.PAGE_03.value: ["county_record", "municipal_report_record", "municipal_resilience_profile_record"],
+        PageName.PAGE_04.value: ["county_record", "municipal_resilience_profile_record"],
+        PageName.PAGE_05.value: ["county_record", "municipal_resilience_profile_record", "climate_projection_record"],
+    }
+
     pages_dir: List[Dict[Path, dict]] = [
         {template_dir / PageName.PAGE_01.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_02.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
