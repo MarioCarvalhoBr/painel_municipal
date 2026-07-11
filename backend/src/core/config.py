@@ -1,5 +1,6 @@
 # backend/src/core/config.py
 from typing import Dict, List
+from enum import Enum
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
@@ -20,13 +21,19 @@ class Settings(BaseSettings):
     
     template_dir: Path = BACKEND_DIR / "src" / "static" / "report"
     
+    class PageName(str, Enum):
+        PAGE_01 = "pagina1"
+        PAGE_02 = "pagina2"
+        PAGE_03 = "pagina3"
+        PAGE_04 = "pagina4"
+        PAGE_05 = "pagina5"
+    
     pages_dir: List[Dict[Path, dict]] = [
-        {BACKEND_DIR / "src" / "static" / "report" / "pagina1" / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-        {BACKEND_DIR / "src" / "static" / "report" / "pagina2" / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-        {BACKEND_DIR / "src" / "static" / "report" / "pagina3" / "index.html": {"width": "842px", "height": "595px", "scale": 1.50, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-        {BACKEND_DIR / "src" / "static" / "report" / "pagina4" / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-        {BACKEND_DIR / "src" / "static" / "report" / "pagina5" / "index.html": {"width": "842px", "height": "595px", "scale": 1, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-
+        {template_dir / PageName.PAGE_01.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {template_dir / PageName.PAGE_02.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {template_dir / PageName.PAGE_03.value / "index.html": {"width": "842px", "height": "595px", "scale": 1.50, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {template_dir / PageName.PAGE_04.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {template_dir / PageName.PAGE_05.value / "index.html": {"width": "842px", "height": "595px", "scale": 1, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
     ]
     
     pyproject_path: Path = BACKEND_DIR / "pyproject.toml"
