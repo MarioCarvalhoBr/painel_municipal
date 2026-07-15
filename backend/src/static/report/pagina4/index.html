@@ -60,7 +60,7 @@
       </div>
       <a class="link-icon link-areas-risco" target="_blank" rel="noopener"
          aria-label="Áreas de risco"
-         href="https://www.redus.org.br/georedus?v=v0&municipioId={{ municipal_resilience_profile_record.geocode }}&viewConf=N4IgRgngkgJiBcoDOBzMB9AtgQwDYAtt0kBXJAYwFMAXASzFt1pmxkvVoDsTOXzsA9ugBMABmEA2AHQpKAzAmTUIuSopAAzRrgAK2atUoAnTghBIBTOAF8ANCGZnUGHASKkKNeo2at2XHj5BEXFpWXkQazsQXGwIARJqBABtUEd4GMoNJPtaQ0wkFLS4DOcsPEJiMio6Bis-Dm5ebH4hMUkZOQVrAF07YrMjWhR8HId8wvhkvr6gA"><img src="./imgs/link-branco.png" alt=""></a>
+         href="https://www.redus.org.br/georedus?v=v0&municipioId={{ county_record.geocode }}&viewConf=N4IgRgngkgJiBcoDOBzMB9AtgQwDYAtt0kBXJAYwFMAXASzFt1pmxkvVoDsTOXzsA9ugBMABmEA2AHQpKAzAmTUIuSopAAzRrgAK2atUoAnTghBIBTOAF8ANCGZnUGHASKkKNeo2at2XHj5BEXFpWXkQazsQXGwIARJqBABtUEd4GMoNJPtaQ0wkFLS4DOcsPEJiMio6Bis-Dm5ebH4hMUkZOQVrAF07YrMjWhR8HId8wvhkvr6gA"><img src="./imgs/link-branco.png" alt=""></a>
     </div>
     <!-- group: Cemaden -->
     <div class="group cemaden-b2b4ab13e7dd">
@@ -901,7 +901,7 @@
       // se ele existir; caso contrário, exibe a imagem padrão "sem mapa".
       // A verificação de existência é feita via onerror do próprio <img>.
       (function () {
-        var geocode = "{{ municipal_resilience_profile_record.geocode }}";
+        var geocode = "{{ county_record.geocode }}";
         var mapImg = document.getElementById("fill-image-render-1870-0");
         if (!mapImg) return;
 
