@@ -88,7 +88,7 @@ class CommonBusinessRules(BaseModel):
             return f"+{CommonBusinessRules.brazilian_formatted_value(value)}"
         if truncated_value < 0:
             return f"−{CommonBusinessRules.brazilian_formatted_value(abs(value))}"
-        return f"={CommonBusinessRules.brazilian_formatted_value(abs(value))}"
+        return f"+{CommonBusinessRules.brazilian_formatted_value(abs(value))}"
 
 
 

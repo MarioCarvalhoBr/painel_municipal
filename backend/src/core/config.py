@@ -27,7 +27,10 @@ class Settings(BaseSettings):
         PAGE_03 = "pagina3"
         PAGE_04 = "pagina4"
         PAGE_05 = "pagina5"
-    
+        
+        PAGE_07 = "pagina7"
+        PAGE_08 = "pagina8" 
+        
     # Records each page's template actually renders (see each pagina's index.html).
     # download_report_page_pdf uses this to skip database queries whose data would
     # never appear in the generated PDF. The climate projection query is still run
@@ -38,6 +41,8 @@ class Settings(BaseSettings):
         PageName.PAGE_03.value: ["county_record", "municipal_report_record", "municipal_resilience_profile_record"],
         PageName.PAGE_04.value: ["county_record", "municipal_resilience_profile_record"],
         PageName.PAGE_05.value: ["county_record", "municipal_resilience_profile_record", "climate_projection_record"],
+        PageName.PAGE_07.value: [],
+        PageName.PAGE_08.value: [],
     }
 
     pages_dir: List[Dict[Path, dict]] = [
@@ -46,6 +51,8 @@ class Settings(BaseSettings):
         {template_dir / PageName.PAGE_03.value / "index.html": {"width": "842px", "height": "595px", "scale": 1.50, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_04.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_05.value / "index.html": {"width": "842px", "height": "595px", "scale": 1, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {template_dir / PageName.PAGE_07.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
+        {template_dir / PageName.PAGE_08.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
     ]
     
     pyproject_path: Path = BACKEND_DIR / "pyproject.toml"
