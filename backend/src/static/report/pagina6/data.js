@@ -47,8 +47,8 @@ window.PAGE_DATA = {
         "valor": "8148 por 100 mil hab"
       },
       {
-        "label": "Diarreia aguda < 5 anos:",
-        "valor": "4 por 100 mil hab"
+        "label": "Monitoramento de diarreia aguda:",
+        "valor": "4 por 100 mil hab",
       }
     ],
     "painelCalorLabel": "Painel de excesso de calor:"

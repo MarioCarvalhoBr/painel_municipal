@@ -252,8 +252,10 @@ class MunicipalIndicatorsReport(BaseModel):
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
             elif key in ["bolsa_familia"]:
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% das famílias pobres" 
-            elif key in ["firjan", "acesso_agua2", "acesso_esgoto", "acesso_energia", "acesso_lixo"]:
+            elif key in ["firjan"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value(value)
+            elif key in ["acesso_agua2", "acesso_esgoto", "acesso_energia", "acesso_lixo"]:
+                data[key] = f'{CommonBusinessRules.brazilian_formatted_value(value)}%'
             elif key in ["pop_urb_pessoas", "pop_rural_pessoas"]:
                 if not isinstance(value, (float, int)):
                     data[key] = "—"
