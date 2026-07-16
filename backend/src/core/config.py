@@ -49,20 +49,15 @@ class Settings(BaseSettings):
     }
 
     pages_dir: List[Dict[Path, dict]] = [
-        """
         {template_dir / PageName.PAGE_00.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_01.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_02.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_03.value / "index.html": {"width": "842px", "height": "595px", "scale": 1.50, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_04.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_05.value / "index.html": {"width": "842px", "height": "595px", "scale": 1, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-        
-        
+        {template_dir / PageName.PAGE_06.value / "index.html": {"width": "842px", "height": "595px", "scale": 1, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_07.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_08.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
-    
-        """
-        {template_dir / PageName.PAGE_06.value / "index.html": {"width": "842px", "height": "595px", "scale": 1, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
     ]
     
     pyproject_path: Path = BACKEND_DIR / "pyproject.toml"
