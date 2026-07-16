@@ -9,7 +9,7 @@ window.PAGE_DATA = {
     }
   },
   "figura": {
-    "image": "./imgs/figura_exemplo.png"
+    "image": "./imgs/figura-mapa-quadrados-coloridos.png"
   },
   "title": {
     "linha1": "Fichas",

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     template_dir: Path = BACKEND_DIR / "src" / "static" / "report"
     
     class PageName(str, Enum):
+        PAGE_00 = "pagina0"
         PAGE_01 = "pagina1"
         PAGE_02 = "pagina2"
         PAGE_03 = "pagina3"
@@ -36,6 +37,7 @@ class Settings(BaseSettings):
     # never appear in the generated PDF. The climate projection query is still run
     # for every page because its geocode names the downloaded file.
     page_context_records: Dict[str, List[str]] = {
+        PageName.PAGE_00.value: ["county_record"],
         PageName.PAGE_01.value: [],
         PageName.PAGE_02.value: ["county_record", "risks_record"],
         PageName.PAGE_03.value: ["county_record", "municipal_report_record"],
@@ -47,6 +49,7 @@ class Settings(BaseSettings):
     }
 
     pages_dir: List[Dict[Path, dict]] = [
+        {template_dir / PageName.PAGE_00.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_01.value / "file.pdf": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_02.value / "index.html": {"width": "842px", "height": "595px", "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},
         {template_dir / PageName.PAGE_03.value / "index.html": {"width": "842px", "height": "595px", "scale": 1.50, "print_background": True, "landscape": False, "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}}},

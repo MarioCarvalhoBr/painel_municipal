@@ -489,17 +489,17 @@ class MunicipalHealthReport(BaseModel):
             elif key == "despesas_saude":
                 data[key] = f"R${CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}/hab"
             elif key in ["cob_vac_menor_2", "cob_vac_influenza"]:
-                data[key] = CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)
+                data[key] = f'{CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}%'
             elif key == "cob_vac_geral":
                 if isinstance(value, str):
                     normalized_value = value.replace(".", "").replace(",", ".")
                     try:
                         numeric_value = float(normalized_value)
-                        data[key] = CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(numeric_value)
+                        data[key] = f'{CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(numeric_value)}%'
                     except ValueError:
                         data[key] = value
                 else:
-                    data[key] = CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)
+                    data[key] = f'{CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}%'
                 
         return data
 

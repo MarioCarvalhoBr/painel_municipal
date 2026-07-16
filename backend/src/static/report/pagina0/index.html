@@ -2,6 +2,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8">
+    <base href="{{ base_url }}">
     <title>AdaptaBrasil — Página 0 atualizada (Capa · Fichas Municipais)</title>
     <link rel="stylesheet" href="./shared/css/fonts.css">
     <link rel="stylesheet" href="./styles.css">
@@ -38,5 +39,40 @@
 </div>
     <script src="./data.js"></script>
     <script src="./shared/js/app.js"></script>
+    <script>
+      // Imprimir o conteúdo de window.PAGE_DATA que vem de data.js para o console
+      console.log('PAGE_DATA (Antes):', window.PAGE_DATA);
+
+      // Injetando dados básicos de localização via Jinja2
+      window.PAGE_DATA.location.city = "{{ county_record.county }}";
+      window.PAGE_DATA.location.state = "{{ county_record.state }}";
+
+      (function () {
+        var geocode = "{{ county_record.geocode }}";
+        var mapEl = document.querySelector('[data-bind-bg="figura.image"]');
+        if (!mapEl) return;
+
+        var fallbackSrc = window.PAGE_DATA.figura.image || "./imgs/figura-mapa-quadrados-coloridos.png";
+
+        function applyBackground(src) {
+          window.PAGE_DATA.figura.image = src;
+          mapEl.style.background = 'url("' + src + '") no-repeat center center / cover';
+        }
+
+        if (!geocode || geocode === "None") {
+          applyBackground(fallbackSrc);
+          return;
+        }
+
+        var mapSrc = "./imgs/mapas_capa/" + geocode + ".png";
+        // background-image não dispara onerror; pré-carrega para poder cair no fallback.
+        var probe = new Image();
+        probe.onload = function () { applyBackground(mapSrc); };
+        probe.onerror = function () { applyBackground(fallbackSrc); };
+        probe.src = mapSrc;
+        console.log("Caminho do mapa definido para geocode " + geocode + ": " + mapSrc);
+      })();
+
+      </script>
   </body>
 </html>
