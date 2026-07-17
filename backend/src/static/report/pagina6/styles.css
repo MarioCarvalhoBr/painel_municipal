@@ -1432,7 +1432,7 @@ body {
   mix-blend-mode: normal;
 }
 
-/* Estabelecimentos de saúde SUS: */
+/* Estabelecimentos de saúde atendem SUS: */
 .estabeleci-4f6d20794d2c {
   position: absolute;
   left: 20.01px;
@@ -1443,7 +1443,7 @@ body {
   mix-blend-mode: normal;
 }
 
-/* Estabelecimentos de saúde SUS: */
+/* Estabelecimentos de saúde atendem SUS: */
 .estabeleci-7cf8c0b34a12 {
   position: absolute;
   left: 0px;
@@ -2763,7 +2763,7 @@ body {
   mix-blend-mode: normal;
 }
 
-/* Estabelecimentos de saúde não SUS: */
+/* Estabelecimentos de saúde não atendem SUS: */
 .estabeleci-0361dfea69d1 {
   position: absolute;
   left: 20.01px;
@@ -2821,7 +2821,7 @@ body {
   font-weight: 400;
 }
 
-/* Estabelecimentos de saúde não SUS: */
+/* Estabelecimentos de saúde não atendem SUS: */
 .estabeleci-c015b7db1ad4 {
   position: absolute;
   left: 0px;

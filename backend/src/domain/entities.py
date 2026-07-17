@@ -503,7 +503,7 @@ class MunicipalHealth(BaseModel):
     
     cob_vac_geral: Optional[str] = None
     cob_vac_menor_2: Optional[float] = None
-    cob_vac_influenza: Optional[float] = None
+    cob_vac_influenza_novo: Optional[float] = None
 
 class MunicipalHealthReport(BaseModel):
     municipal_health: MunicipalHealth
@@ -525,7 +525,7 @@ class MunicipalHealthReport(BaseModel):
                 data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "para cada mil hab")
             elif key == "despesas_saude":
                 data[key] = f"R${CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}/hab"
-            elif key in ["cob_vac_menor_2", "cob_vac_influenza"]:
+            elif key in ["cob_vac_menor_2", "cob_vac_influenza_novo"]:
                 data[key] = f'{CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}%'
             elif key == "cob_vac_geral":
                 if isinstance(value, str):
