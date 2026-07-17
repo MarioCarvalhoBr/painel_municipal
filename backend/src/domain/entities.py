@@ -8,16 +8,16 @@ from ..helpers.common.formatting.number_formatting_processing import NumberForma
 
 class CommonBusinessRules(BaseModel):
     @staticmethod
-    def brazilian_formatted_value(value: Optional[float | int]) -> Optional[str]:
+    def brazilian_formatted_value(value: Optional[float | int], precision: int = 2) -> Optional[str]:
         if value is None:
             return "—"
-        truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=2)
-        
+        truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=precision)
+
         if isinstance(value, (float)):
-            return NumberFormattingProcessing.format_number_brazilian(float(truncated_value))
+            return NumberFormattingProcessing.format_number_brazilian(float(truncated_value), precision=precision)
         elif isinstance(value, (int)):
-            return NumberFormattingProcessing.format_number_brazilian(int(truncated_value))
-        
+            return NumberFormattingProcessing.format_number_brazilian(int(truncated_value), precision=precision)
+
         return "—"
     
     @staticmethod
@@ -253,7 +253,7 @@ class MunicipalIndicatorsReport(BaseModel):
             elif key in ["bolsa_familia"]:
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}% das famílias pobres" 
             elif key in ["firjan"]:
-                data[key] = CommonBusinessRules.brazilian_formatted_value(value)
+                data[key] = CommonBusinessRules.brazilian_formatted_value(value, precision=4)
             elif key in ["acesso_agua2", "acesso_esgoto", "acesso_energia", "acesso_lixo"]:
                 data[key] = f'{CommonBusinessRules.brazilian_formatted_value(value)}%'
             elif key in ["pop_urb_pessoas", "pop_rural_pessoas"]:
@@ -271,13 +271,13 @@ class MunicipalIndicatorsReport(BaseModel):
                 if not isinstance(value, (float, int)):
                     data[key] = "—"
                 elif value >= 0.800:
-                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Muito Alto)"
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value, precision=3)} (Muito Alto)"
                 elif 0.700 <= value < 0.800:
-                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Alto)"
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value, precision=3)} (Alto)"
                 elif 0.550 <= value < 0.700:
-                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Médio)"
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value, precision=3)} (Médio)"
                 else:
-                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)} (Baixo)"
+                    data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value, precision=3)} (Baixo)"
             
             elif key in ["imig_regist"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value(value)
