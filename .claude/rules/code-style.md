@@ -1,5 +1,9 @@
 # Estilo de Código
 
+## Idioma
+- **Todo código-fonte gerado deve ser em inglês**: nomes de variáveis, funções, classes, comentários, docstrings e mensagens de log.
+- Exceções (permanecem em português): textos exibidos ao usuário (UI do frontend e conteúdo do relatório PDF), termos de domínio vindos do banco (ex.: colunas `Ameaça`, `Capacidade adaptativa`) e a documentação interna (`.specs/`, `.claude/`).
+
 ## Python (backend)
 - Seguir a Clean Architecture existente: `domain/` não importa de `application/`, `infrastructure/` nem de FastAPI. Implementações concretas só entram via `application/dependencies.py`.
 - Entidades são modelos Pydantic com campos `Optional` e default `None`; cada agregado tem um wrapper `*Report` com `formatted_data_dict`.

@@ -12,6 +12,7 @@ Gera fichas municipais em PDF com indicadores socioclimáticos. Especificações
 - Templates do relatório em `static/report/paginaN/` (842×595 px; ordem das páginas em `settings.pages_dir`).
 
 ## Convenções
+- Todo código-fonte em **inglês** (identificadores, comentários, docstrings, logs); textos de UI/relatório em pt-BR.
 - Commits: inglês, com tags semânticas (`feat:`, `fix:`, `style:`, `docs:`, `chore:`).
 - Formatação numérica pt-BR só no domínio (`CommonBusinessRules`); valor ausente = `"—"`. Nunca formatar em JS/Jinja2.
 - API versionada em `/api/v1` — sem breaking changes; textos de UI em português brasileiro.
