@@ -1,29 +1,29 @@
-# UC-NNN — [Nome do Caso de Uso]
+# UC-NNN — [Use Case Name]
 
-## Descrição
-Resumo em uma ou duas frases do objetivo do caso de uso.
+## Description
+One- or two-sentence summary of the use case's goal.
 
-## Atores
-- **Primário**: quem inicia
-- **Secundários / Sistema**: componentes envolvidos
+## Actors
+- **Primary**: who initiates it
+- **Secondary / System**: components involved
 
-## Pré-condições
-Estado necessário antes da execução.
+## Preconditions
+Required state before execution.
 
-## Gatilho
-Evento/endpoint/ação que inicia o caso de uso.
+## Trigger
+Event/endpoint/action that starts the use case.
 
-## Fluxo principal
-1. Passo a passo do caminho feliz, numerado.
+## Main flow
+1. Numbered step-by-step happy path.
 
-## Fluxos alternativos / exceções
-- **A1 — [nome]**: condição → comportamento (código HTTP e chave `ERR_*` quando aplicável).
+## Alternative flows / exceptions
+- **A1 — [name]**: condition → behavior (HTTP status and `ERR_*` key when applicable).
 
-## Pós-condições
-Estado do sistema após execução (incluindo "nenhum estado persistido", se stateless).
+## Postconditions
+System state after execution (including "no persisted state" if stateless).
 
-## Regras de negócio envolvidas
-Referências às regras em `business-rules/`.
+## Business rules involved
+References to the rules in `business-rules/`.
 
-## Referências
-Código-fonte e specs relacionadas.
+## References
+Source code and related specs.

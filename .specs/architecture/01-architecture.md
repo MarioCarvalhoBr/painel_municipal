@@ -1,42 +1,42 @@
-# Arquitetura do Sistema
+# System Architecture
 
-## Princípio
+## Principle
 
-O backend segue **Clean Architecture**: dependências apontam sempre para dentro (Infrastructure → Application → Domain). O domínio não conhece FastAPI, SQL nem Playwright.
+The backend follows **Clean Architecture**: dependencies always point inward (Infrastructure → Application → Domain). The domain knows nothing about FastAPI, SQL or Playwright.
 
 ```
 backend/src/
-├── domain/           # Camada de Domínio (sem dependências externas de framework)
-│   ├── entities.py       # Entidades Pydantic + regras de formatação (CommonBusinessRules)
-│   └── interfaces.py     # Contratos abstratos (ABC) de repositórios e serviços
-├── application/      # Camada de Aplicação
-│   ├── router.py         # Endpoints FastAPI (casos de uso orquestrados)
-│   └── dependencies.py   # Injeção de dependências (Depends)
-├── infrastructure/   # Camada de Infraestrutura (implementações concretas)
+├── domain/           # Domain Layer (no framework dependencies)
+│   ├── entities.py       # Pydantic entities + formatting rules (CommonBusinessRules)
+│   └── interfaces.py     # Abstract contracts (ABC) for repositories and services
+├── application/      # Application Layer
+│   ├── router.py         # FastAPI endpoints (orchestrated use cases)
+│   └── dependencies.py   # Dependency injection (Depends)
+├── infrastructure/   # Infrastructure Layer (concrete implementations)
 │   ├── database.py           # PostgresDatabase (asyncpg)
-│   ├── repository.py         # Repositórios SQL por agregado
+│   ├── repository.py         # SQL repositories per aggregate
 │   ├── pdf_service.py        # PlaywrightPdfService (render + merge)
-│   ├── image_service.py      # Download de imagens como data URI
-│   └── project_info_service.py  # Metadados do projeto (pyproject.toml)
-├── core/             # Configuração global
-│   ├── config.py         # Settings (pydantic-settings, .env) + mapa de páginas
+│   ├── image_service.py      # Image download as data URI
+│   └── project_info_service.py  # Project metadata (pyproject.toml)
+├── core/             # Global configuration
+│   ├── config.py         # Settings (pydantic-settings, .env) + page registry
 │   └── constants.py      # Enums: PdfEngineType, ErrorKeys
-├── helpers/          # Utilitários puros
+├── helpers/          # Pure utilities
 │   └── common/formatting/number_formatting_processing.py
-├── static/report/    # Templates das páginas do relatório (paginaN/)
-└── main.py           # Bootstrap FastAPI: CORS, rate limiting, rotas
+├── static/report/    # Report page templates (paginaN/)
+└── main.py           # FastAPI bootstrap: CORS, rate limiting, routes
 ```
 
-## Regras de dependência
+## Dependency rules
 
-1. `domain/` **não importa** de `application/`, `infrastructure/` ou FastAPI. Pode usar Pydantic, pandas e `helpers/`.
-2. `application/` depende apenas de `domain/` (interfaces + entidades) e `core/`. A escolha das implementações concretas acontece **exclusivamente** em `application/dependencies.py`.
-3. `infrastructure/` implementa as interfaces de `domain/interfaces.py`. Toda nova integração externa (banco, browser, HTTP) entra aqui.
-4. `core/config.py` é a **única fonte de verdade** para configuração: variáveis `.env`, engine de PDF, diretórios de template, dimensões das páginas (`pages_dir`) e mapa página→registros (`page_context_records`).
+1. `domain/` **must not import** from `application/`, `infrastructure/` or FastAPI. It may use Pydantic, pandas and `helpers/`.
+2. `application/` depends only on `domain/` (interfaces + entities) and `core/`. Concrete implementations are chosen **exclusively** in `application/dependencies.py`.
+3. `infrastructure/` implements the interfaces from `domain/interfaces.py`. Every new external integration (database, browser, HTTP) goes here.
+4. `core/config.py` is the **single source of truth** for configuration: `.env` variables, PDF engine, template directories, page dimensions (`pages_dir`) and the page→records map (`page_context_records`).
 
-## Interfaces do domínio (contratos)
+## Domain interfaces (contracts)
 
-| Interface | Método(s) | Implementação |
+| Interface | Method(s) | Implementation |
 |---|---|---|
 | `DatabaseInterface` | `fetch_all(query, *args)`, `test_connection()` | `PostgresDatabase` |
 | `CountyRepositoryInterface` | `get_counties()`, `get_county(id)` | `CountyRepository` |
@@ -49,19 +49,19 @@ backend/src/
 | `ProjectInfoServiceInterface` | `get_project_info()` | `ProjectInfoService` |
 | `ImageServiceInterface` | `fetch_as_data_uri(url)` | `ImageService` |
 
-## Padrões transversais
+## Cross-cutting patterns
 
-- **Rate limiting**: SlowAPI, chave por IP remoto (`get_remote_address`), limite de `200/minute` nos endpoints de PDF. Excesso retorna HTTP 429.
-- **CORS**: apenas origens listadas em `main.py` (`ALLOWED_ORIGINS`), métodos `GET` e `OPTIONS`.
-- **Erros**: chaves padronizadas no enum `ErrorKeys` (`core/constants.py`), no formato `ERR_*`. Endpoints traduzem ausência de dados em HTTP 404 com a chave correspondente e falhas internas em HTTP 500.
-- **Formatação numérica**: centralizada em `CommonBusinessRules` (`domain/entities.py`) — ver [`../business-rules/01-number-formatting.md`](../business-rules/01-number-formatting.md).
+- **Rate limiting**: SlowAPI, keyed by remote IP (`get_remote_address`), `200/minute` limit on PDF endpoints. Excess returns HTTP 429.
+- **CORS**: only origins listed in `main.py` (`ALLOWED_ORIGINS`), methods `GET` and `OPTIONS`.
+- **Errors**: standardized keys in the `ErrorKeys` enum (`core/constants.py`), `ERR_*` format. Endpoints translate missing data into HTTP 404 with the matching key and internal failures into HTTP 500.
+- **Number formatting**: centralized in `CommonBusinessRules` (`domain/entities.py`) — see [`../business-rules/01-number-formatting.md`](../business-rules/01-number-formatting.md).
 
-## Requisitos para novas funcionalidades
+## Requirements for new features
 
-Ao adicionar um novo dado ao relatório:
+When adding a new piece of data to the report:
 
-1. Criar/estender a **entidade** e o **Report wrapper** (com `formatted_data_dict`) em `domain/entities.py`.
-2. Declarar a **interface** do repositório em `domain/interfaces.py` e implementá-la em `infrastructure/repository.py` (consulta ao schema `painel_municipal`).
-3. Registrar o provider em `application/dependencies.py` e injetar no endpoint em `application/router.py`.
-4. Atualizar `page_context_records` em `core/config.py` caso o dado alimente uma página específica.
-5. Consumir o registro no template Jinja2 da página (`static/report/paginaN/`).
+1. Create/extend the **entity** and its **Report wrapper** (with `formatted_data_dict`) in `domain/entities.py`.
+2. Declare the repository **interface** in `domain/interfaces.py` and implement it in `infrastructure/repository.py` (query against the `painel_municipal` schema).
+3. Register the provider in `application/dependencies.py` and inject it into the endpoint in `application/router.py`.
+4. Update `page_context_records` in `core/config.py` if the data feeds a specific page.
+5. Consume the record in the page's Jinja2 template (`static/report/paginaN/`).

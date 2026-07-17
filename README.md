@@ -170,7 +170,7 @@ The report uses a **multi-page merge strategy** (details in [`.specs/architectur
 ## 📚 Project Documentation (.specs and .claude)
 
 - **[`.specs/`](.specs/README.md)** — the source of truth for requirements: system architecture, data model, REST API contract, business rules (Brazilian number formatting, report page rules) and use cases (UC-001…UC-004). New features should start from these documents and keep them updated.
-- **[`.claude/`](.claude/)** — Claude Code configuration for AI-assisted development: modular guidelines in `rules/` (code style, git workflow, testing, security), custom slash commands in `commands/` (`/gerar-pdf`, `/revisar`, `/release`, `/nova-pagina`), specialized subagents in `agents/` and reusable skills in `skills/`. [`CLAUDE.md`](CLAUDE.md) is the concise project manual loaded in every session.
+- **[`.claude/`](.claude/)** — Claude Code configuration for AI-assisted development: modular guidelines in `rules/` (code style, git workflow, testing, security), custom slash commands in `commands/` (`/generate-pdf`, `/review-changes`, `/release`, `/new-page`), specialized subagents in `agents/` and reusable skills in `skills/`. [`CLAUDE.md`](CLAUDE.md) is the concise project manual loaded in every session.
 
 ## 🤝 Contributing
 

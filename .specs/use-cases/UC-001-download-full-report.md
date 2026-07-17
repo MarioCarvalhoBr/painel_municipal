@@ -1,43 +1,43 @@
-# UC-001 — Baixar Relatório Completo em PDF
+# UC-001 — Download Full PDF Report
 
-## Descrição
-Usuário obtém a ficha municipal completa (páginas 0–8 mescladas) de um município em um único arquivo PDF.
+## Description
+The user obtains the complete municipal report card (pages 0–8 merged) for a municipality as a single PDF file.
 
-## Atores
-- **Primário**: Usuário final (via frontend) ou script de lote (`scripts/download_reports_*.sh`).
-- **Sistema**: Backend FastAPI, PostgreSQL, Playwright/Chromium.
+## Actors
+- **Primary**: End user (via frontend) or batch script (`scripts/download_reports_*.sh`).
+- **System**: FastAPI backend, PostgreSQL, Playwright/Chromium.
 
-## Pré-condições
-- Município existe na tabela `painel_municipal.adapta_data`.
-- Todas as tabelas de dados possuem registro para o `county_id` solicitado.
-- Backend com Chromium instalado (imagem Docker já provisiona).
+## Preconditions
+- Municipality exists in the `painel_municipal.adapta_data` table.
+- All data tables have a record for the requested `county_id`.
+- Backend has Chromium installed (the Docker image provisions it).
 
-## Gatilho
-`GET /api/v1/reports/pdf/{county_id}` (no frontend: clique em "Download" após selecionar o município).
+## Trigger
+`GET /api/v1/reports/pdf/{county_id}` (in the frontend: clicking "Download" after selecting the municipality).
 
-## Fluxo principal
-1. Sistema valida rate limit (200/min por IP).
-2. Sistema busca, em sequência: county, fatores de risco, indicadores municipais, perfil de resiliência, projeção climática e saúde municipal.
-3. Sistema aplica as regras de formatação brasileira a cada conjunto (wrappers `*Report`).
-4. Sistema monta o contexto único e chama `generate_pdf_merged`:
-   - páginas HTML são renderizadas via Jinja2 + Playwright;
-   - páginas estáticas (`file.pdf`) são anexadas com escala normalizada;
-   - tudo é mesclado na ordem de `settings.pages_dir`.
-5. Sistema responde `200` com `application/pdf` e `Content-Disposition: attachment; filename="{geocode}.pdf"`.
+## Main flow
+1. System validates the rate limit (200/min per IP).
+2. System fetches, in sequence: county, risk factors, municipal indicators, resilience profile, climate projection and municipal health.
+3. System applies the Brazilian formatting rules to each dataset (`*Report` wrappers).
+4. System builds the single context and calls `generate_pdf_merged`:
+   - HTML pages are rendered via Jinja2 + Playwright;
+   - static pages (`file.pdf`) are appended with normalized scaling;
+   - everything is merged in the order of `settings.pages_dir`.
+5. System responds `200` with `application/pdf` and `Content-Disposition: attachment; filename="{geocode}.pdf"`.
 
-## Fluxos alternativos / exceções
-- **A1 — Dados ausentes**: qualquer conjunto vazio → `404` com a chave `ERR_*_NOT_FOUND` correspondente; nenhum PDF é gerado.
-- **A2 — Falha de renderização** (template inexistente, erro do Chromium, PDF estático ausente): `500` com detalhe da exceção.
-- **A3 — Rate limit excedido**: `429` (handler padrão do SlowAPI).
-- **A4 — Geocode indisponível**: nome do arquivo cai para `county_{county_id}.pdf`.
+## Alternative flows / exceptions
+- **A1 — Missing data**: any empty dataset → `404` with the matching `ERR_*_NOT_FOUND` key; no PDF is generated.
+- **A2 — Rendering failure** (missing template, Chromium error, missing static PDF): `500` with the exception detail.
+- **A3 — Rate limit exceeded**: `429` (SlowAPI default handler).
+- **A4 — Geocode unavailable**: file name falls back to `county_{county_id}.pdf`.
 
-## Pós-condições
-- Nenhum estado persistido; geração é stateless (arquivos temporários são removidos).
+## Postconditions
+- No persisted state; generation is stateless (temp files are removed).
 
-## Requisitos não funcionais
-- Página renderizada em alta resolução (`device_scale_factor=3`).
-- O endpoint deve permanecer stateless para permitir paralelização por scripts de lote.
+## Non-functional requirements
+- Pages rendered at high resolution (`device_scale_factor=3`).
+- The endpoint must remain stateless to allow parallelization by batch scripts.
 
-## Referências
+## References
 - `backend/src/application/router.py` (`download_report_pdf`)
 - [`../architecture/03-pdf-generation.md`](../architecture/03-pdf-generation.md)

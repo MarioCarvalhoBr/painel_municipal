@@ -1,27 +1,27 @@
 ---
 name: debug-pdf
-description: Diagnóstico de problemas na geração de PDF (página em branco, layout quebrado, erro 500, imagem faltando, fonte errada). Use quando um PDF gerado sair diferente do esperado.
+description: Diagnosis of PDF generation problems (blank page, broken layout, 500 error, missing image, wrong font). Use when a generated PDF comes out different from expected.
 ---
 
-# Depuração da Geração de PDF
+# PDF Generation Debugging
 
-Pipeline: Jinja2 → HTML temporário → Chromium (Playwright, `file://`, `networkidle`) → `page.pdf()` → merge pypdf. Detalhes: `.specs/architecture/03-pdf-generation.md`.
+Pipeline: Jinja2 → temp HTML → Chromium (Playwright, `file://`, `networkidle`) → `page.pdf()` → pypdf merge. Details: `.specs/architecture/03-pdf-generation.md`.
 
-## Roteiro de diagnóstico
+## Diagnostic playbook
 
-1. **Reproduza isolado**: gere só a página problemática —
-   `curl -s -o /tmp/p.pdf "http://localhost:3000/api/v1/reports/pdf/{pagina}/{county_id}/"` e confira o corpo em caso de erro (chave `ERR_*`).
-2. **Erro 404 com `ERR_*_NOT_FOUND`**: dado ausente no banco para o `county_id` — confirme na tabela correspondente (mapa em `.specs/architecture/02-data-model.md`).
-3. **Erro 500**: veja `make logs-backend`. Causas comuns: template com variável inexistente no contexto (confira `page_context_records` em `core/config.py`), `file.pdf` estático ausente, Chromium não instalado no container.
-4. **Página renderiza mas layout quebrado**:
-   - Imagem faltando → caminho relativo errado (assets resolvem via `base_url` = diretório da página; use `./imgs/...`).
-   - Fonte errada → `shared/css/fonts.css` não referenciado ou `@font-face` local indevido.
-   - Elemento fora de lugar → conferir geometria (viewport 842×595; centro horizontal em 421px).
-   - Conteúdo cortado → transbordou o viewport; reduza dimensões, nunca aumente a página.
-5. **Depuração visual rápida**: abra o template no navegador com um contexto fake — renderize o Jinja2 manualmente ou substitua as variáveis por valores de exemplo — antes de regenerar o PDF.
-6. **Merge com página errada/faltando**: ordem e presença vêm de `settings.pages_dir`; confira a entrada e o sufixo (`.html` × `.pdf`).
+1. **Reproduce in isolation**: generate only the problematic page —
+   `curl -s -o /tmp/p.pdf "http://localhost:3000/api/v1/reports/pdf/{page}/{county_id}/"` and inspect the body on error (`ERR_*` key).
+2. **404 with `ERR_*_NOT_FOUND`**: data missing in the database for that `county_id` — confirm in the corresponding table (map in `.specs/architecture/02-data-model.md`).
+3. **500 error**: check `make logs-backend`. Common causes: template referencing a variable missing from the context (check `page_context_records` in `core/config.py`), missing static `file.pdf`, Chromium not installed in the container.
+4. **Page renders but the layout is broken**:
+   - Missing image → wrong relative path (assets resolve via `base_url` = the page directory; use `./imgs/...`).
+   - Wrong font → `shared/css/fonts.css` not referenced or an unwanted local `@font-face`.
+   - Misplaced element → check geometry (842×595 viewport; horizontal center at 421px).
+   - Clipped content → it overflowed the viewport; shrink the element, never enlarge the page.
+5. **Quick visual debugging**: open the template in a browser with a fake context — render the Jinja2 manually or replace the variables with sample values — before regenerating the PDF.
+6. **Merge with a wrong/missing page**: order and presence come from `settings.pages_dir`; check the entry and the suffix (`.html` × `.pdf`).
 
-## O que não fazer
+## What not to do
 
-- Não alterar as dimensões padrão (842×595) para "consertar" uma página.
-- Não adicionar formatação de valores no template como paliativo — a correção é no domínio.
+- Do not change the standard dimensions (842×595) to "fix" a page.
+- Do not add value formatting in the template as a workaround — the fix belongs in the domain.

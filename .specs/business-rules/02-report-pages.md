@@ -1,61 +1,62 @@
-# Regras de Negócio — Páginas do Relatório
+# Business Rules — Report Pages
 
-Cada página vive em `backend/src/static/report/paginaN/` e segue o padrão descrito em [`../architecture/03-pdf-generation.md`](../architecture/03-pdf-generation.md). Os designs vêm de boards do Penpot; o CSS exportado é adaptado (sem `@font-face` local — fontes vêm de `shared/css/fonts.css`, família principal **Roboto**).
+Each page lives in `backend/src/static/report/paginaN/` and follows the pattern described in [`../architecture/03-pdf-generation.md`](../architecture/03-pdf-generation.md). Designs come from Penpot boards; the exported CSS is adapted (no local `@font-face` — fonts come from `shared/css/fonts.css`, main family **Roboto**).
 
-## Regras comuns a todas as páginas
+## Rules common to all pages
 
-1. Dimensão fixa **842×595 px** (paisagem); nenhum conteúdo pode ultrapassar o viewport.
-2. Textos dinâmicos vêm do contexto Jinja2 (`county_record`, `*_record`); textos fixos e tokens de design ficam em `data.js` (`window.PAGE_DATA`).
-3. Identificação do município: `{{ county_record.county }} - {{ county_record.state }}` (exibida em caixa alta via CSS `text-transform: uppercase`).
-4. Valores já chegam formatados do backend — o template não faz cálculo nem formatação.
-5. Cores dos indicadores de risco vêm do banco (`color`, `current_value_color`, `future_color`, `{detail}_color`) e são aplicadas inline.
+1. Fixed size **842×595 px** (landscape); no content may overflow the viewport.
+2. Dynamic texts come from the Jinja2 context (`county_record`, `*_record`); fixed texts and design tokens live in `data.js` (`window.PAGE_DATA`).
+3. Municipality identification: `{{ county_record.county }} - {{ county_record.state }}` (displayed in uppercase via CSS `text-transform: uppercase`).
+4. Values arrive already formatted from the backend — the template performs no calculation or formatting.
+5. Risk indicator colors come from the database (`color`, `current_value_color`, `future_color`, `{detail}_color`) and are applied inline.
+6. All report content visible to the reader (titles, labels, units) is written in **Brazilian Portuguese**.
 
-## pagina0 — Capa
+## pagina0 — Cover
 
-- Título "Fichas Municipais" e figura de fundo (`figura-mapa-quadrados-coloridos.png`) cobrindo a página.
-- Caixa do município (`.rectangle-*`): centralizada horizontalmente (o centro da caixa deve coincidir com `842/2 = 421px`), com o nome `município - UF` centrado dentro dela. Largura atual: 360px (`left: 241px`).
-- Dados: apenas `county_record`.
+- "Fichas Municipais" title and background figure (`figura-mapa-quadrados-coloridos.png`) covering the page.
+- Municipality box (`.rectangle-*`): horizontally centered (the box center must match `842/2 = 421px`), with the `municipality - state` name centered inside it. Current width: 360px (`left: 241px`).
+- Data: `county_record` only.
 
-## pagina1 — Institucional (PDF estático)
+## pagina1 — Institutional (static PDF)
 
-- `file.pdf` fornecido pela equipe de design; explica a metodologia AdaptaBrasil (flor de risco, lógica dos indicadores, logos INPE/AdaptaBrasil/GIZ/Plano Clima).
-- Sem dados dinâmicos. Substituição = trocar o arquivo `file.pdf`.
+- `file.pdf` provided by the design team; explains the AdaptaBrasil methodology ("flor de risco", indicator logic, INPE/AdaptaBrasil/GIZ/Plano Clima logos).
+- No dynamic data. Replacement = swap the `file.pdf`.
 
-## pagina2 — Fatores de Risco Climático
+## pagina2 — Climate Risk Factors
 
-- Tabela transposta de riscos: uma linha por risco (`risk_id`), colunas Ameaça/Exposição/Vulnerabilidade/Sensibilidade/Capacidade adaptativa, valores atuais e futuros com suas cores.
-- Ordem das linhas: `current_value` decrescente (riscos mais críticos primeiro), depois `sep_id`, `risk`, `detail`.
-- Iconografia "flor de risco".
+- Transposed risk table: one row per risk (`risk_id`), columns Ameaça/Exposição/Vulnerabilidade/Sensibilidade/Capacidade adaptativa, current and future values with their colors.
+- Row order: `current_value` descending (most critical risks first), then `sep_id`, `risk`, `detail`.
+- "Flor de risco" iconography.
 
-## pagina3 — Indicadores Municipais
+## pagina3 — Municipal Indicators
 
-- Blocos: caracterização territorial, características da população, condições socioeconômicas, infraestrutura e serviços, mobilidade.
-- Renderizada com `scale: 1.50` (config específica em `pages_dir`).
-- Ícones temáticos (água, esgoto, energia, resíduos).
+- Blocks: territorial characterization, population characteristics, socioeconomic conditions, infrastructure and services, mobility.
+- Rendered with `scale: 1.50` (page-specific config in `pages_dir`).
+- Thematic icons (water, sewage, energy, waste).
 
-## pagina4 — Perfil de Resiliência Municipal
+## pagina4 — Municipal Resilience Profile
 
-- Planos municipais exibidos com selo visual: `POSSUI` / `NÃO POSSUI` / `AUSENTE` (imagens em `imgs/`).
-- Histórico de desastres (contagens) e danos totais em escala curta de moeda.
-- Mapa do município quando disponível; fallback: `imagem-sem-mapa-do-municipio.png`.
+- Municipal plans displayed with a visual badge: `POSSUI` / `NÃO POSSUI` / `AUSENTE` (images in `imgs/`).
+- Disaster history (counts) and total damages in short-scale currency.
+- Municipality map when available; fallback: `imagem-sem-mapa-do-municipio.png`.
 
-## pagina5 — Projeções Climáticas
+## pagina5 — Climate Projections
 
-- Injeta o registro completo no template: `{{ climate_projection_record | tojson | safe }}` (consumido via JS da página).
-- Cada variável climática mostra: valor observado + três cenários (tendência, otimista, pessimista) **com sinal explícito** (`+`/`−`).
-- Ícones por variável (temperatura média/máx/mín, dias secos, dias de chuva, chuvas extremas, intensidade, nível do mar).
+- Injects the full record into the template: `{{ climate_projection_record | tojson | safe }}` (consumed by the page's JS).
+- Each climate variable shows: observed value + three scenarios (trend, optimistic, pessimistic) **with explicit sign** (`+`/`−`).
+- Per-variable icons (mean/max/min temperature, dry days, rainy days, extreme rain, intensity, sea level).
 
-## pagina6 — Saúde Municipal
+## pagina6 — Municipal Health
 
-- Perfil epidemiológico (incidências por 100 mil hab), recursos de saúde (por mil hab), despesas per capita e coberturas vacinais (geral, menores de 2 anos, influenza 60+).
+- Epidemiological profile (incidence per 100k inhabitants), health resources (per 1k inhabitants), per-capita expenses and vaccine coverage (overall, under-2s, influenza 60+).
 
-## pagina7 / pagina8 — Institucionais (PDF estático)
+## pagina7 / pagina8 — Institutional (static PDF)
 
-- Mesmo tratamento da pagina1.
+- Same treatment as pagina1.
 
-## Fluxo de atualização de design
+## Design update flow
 
-1. Design é editado no Penpot e exportado.
-2. Export é colocado em `local_data/src-atualizado/src/paginaN/` para conferência.
-3. Após validação visual, os arquivos são adaptados e copiados para `backend/src/static/report/paginaN/` (remover `@font-face`, apontar fontes para `shared/`, converter textos fixos em variáveis Jinja2 quando forem dinâmicos).
-4. Validar o resultado gerando a página isolada: `GET /api/v1/reports/pdf/paginaN/{county_id}/`.
+1. The design is edited in Penpot and exported.
+2. The export is placed in `local_data/src-atualizado/src/paginaN/` for review.
+3. After visual validation, the files are adapted and copied to `backend/src/static/report/paginaN/` (remove `@font-face`, point fonts to `shared/`, convert fixed texts into Jinja2 variables when they are dynamic).
+4. Validate the result by generating the page in isolation: `GET /api/v1/reports/pdf/paginaN/{county_id}/`.

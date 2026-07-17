@@ -1,82 +1,82 @@
-# Pipeline de Geração de PDF
+# PDF Generation Pipeline
 
-## Visão geral
+## Overview
 
-O relatório é composto por páginas independentes definidas em `settings.pages_dir` (`backend/src/core/config.py`). Cada página é:
+The report is composed of independent pages defined in `settings.pages_dir` (`backend/src/core/config.py`). Each page is either:
 
-- **Template HTML** (`paginaN/index.html`) — renderizada com Jinja2 e convertida em PDF pelo Playwright (Chromium headless); ou
-- **PDF estático** (`paginaN/file.pdf`) — anexada diretamente, com escala ajustada ao tamanho padrão.
+- **HTML template** (`paginaN/index.html`) — rendered with Jinja2 and converted to PDF by Playwright (headless Chromium); or
+- **Static PDF** (`paginaN/file.pdf`) — appended directly, scaled to the standard size.
 
-A ordem das entradas em `pages_dir` **é a ordem das páginas no PDF final**.
+The order of `pages_dir` entries **is the page order in the final PDF**.
 
-## Especificação de página
+## Page specification
 
-Cada entrada de `pages_dir` mapeia `Path do template → config de impressão`:
+Each `pages_dir` entry maps `template Path → print config`:
 
 ```python
 {template_dir / "pagina0" / "index.html": {
     "width": "842px", "height": "595px",
     "print_background": True, "landscape": False,
     "margin": {"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"},
-    # opcional: "scale": 1.50 (usado na pagina3)
+    # optional: "scale": 1.50 (used by pagina3)
 }}
 ```
 
-Requisitos:
+Requirements:
 
-1. Dimensão padrão de página: **842×595 px** (A4 paisagem em 96 dpi). Conversão para pontos PDF: `px × 72 / 96` (`_page_size_in_points`).
-2. `device_scale_factor=3` no Chromium para alta resolução de render.
-3. `prefer_css_page_size=True` é aplicado por padrão.
-4. Chromium é lançado com `--disable-web-security --allow-file-access-from-files` para permitir assets locais (`file://`).
+1. Standard page size: **842×595 px** (A4 landscape at 96 dpi). Conversion to PDF points: `px × 72 / 96` (`_page_size_in_points`).
+2. `device_scale_factor=3` in Chromium for high rendering resolution.
+3. `prefer_css_page_size=True` is applied by default.
+4. Chromium is launched with `--disable-web-security --allow-file-access-from-files` to allow local assets (`file://`).
 
-## Fluxo de renderização (página HTML)
+## Rendering flow (HTML page)
 
-1. O contexto recebe `base_url` = URI absoluta do diretório da página (para resolver `imgs/`, `styles.css`, `data.js`).
-2. O template é renderizado com Jinja2 (`FileSystemLoader` no diretório da página).
-3. O HTML resultante é escrito em arquivo temporário e aberto via `file://` com `wait_until="networkidle"` (garante carregamento de fontes e imagens antes do print).
-4. `page.pdf(**config)` gera os bytes; o arquivo temporário é removido em `finally`.
+1. The context receives `base_url` = absolute URI of the page directory (to resolve `imgs/`, `styles.css`, `data.js`).
+2. The template is rendered with Jinja2 (`FileSystemLoader` rooted at the page directory).
+3. The resulting HTML is written to a temp file and opened via `file://` with `wait_until="networkidle"` (ensures fonts and images load before printing).
+4. `page.pdf(**config)` produces the bytes; the temp file is removed in `finally`.
 
-## Fluxo de mesclagem (`generate_pdf_merged`)
+## Merge flow (`generate_pdf_merged`)
 
-1. Itera `pages_dir` na ordem declarada.
-2. Página `.pdf`: valida existência, aplica `scale_to` para o tamanho padrão e anexa via pypdf.
-3. Página `.html`: gera o PDF individual e anexa todas as suas páginas.
-4. Escreve o resultado consolidado em memória (`io.BytesIO`) e retorna os bytes.
+1. Iterates `pages_dir` in declared order.
+2. `.pdf` page: validates existence, applies `scale_to` to the standard size and appends via pypdf.
+3. `.html` page: generates the individual PDF and appends all of its pages.
+4. Writes the consolidated result to memory (`io.BytesIO`) and returns the bytes.
 
-## Página individual (`generate_pdf_page`)
+## Single page (`generate_pdf_page`)
 
-Localiza a entrada de `pages_dir` cujo diretório-pai é `page_name`; aplica o mesmo tratamento (estático × renderizado). `page_name` inexistente lança `KeyError` → HTTP 404 (`ERR_PAGE_NOT_FOUND`).
+Finds the `pages_dir` entry whose parent directory is `page_name`; applies the same treatment (static × rendered). An unknown `page_name` raises `KeyError` → HTTP 404 (`ERR_PAGE_NOT_FOUND`).
 
-## Otimização de contexto por página
+## Per-page context optimization
 
-`settings.page_context_records` declara quais registros cada template realmente usa. O endpoint de página individual consulta **apenas** os repositórios necessários. Exceção: **a projeção climática é sempre consultada**, pois o `geocode` dela nomeia o arquivo baixado (`{geocode}.pdf`).
+`settings.page_context_records` declares which records each template actually uses. The single-page endpoint queries **only** the required repositories. Exception: **the climate projection is always queried**, because its `geocode` names the downloaded file (`{geocode}.pdf`).
 
-| Página | Registros exigidos |
+| Page | Required records |
 |---|---|
 | pagina0 | `county_record` |
-| pagina1 | — (PDF estático) |
+| pagina1 | — (static PDF) |
 | pagina2 | `county_record`, `risks_record` |
 | pagina3 | `county_record`, `municipal_report_record` |
 | pagina4 | `county_record`, `municipal_resilience_profile_record` |
 | pagina5 | `county_record`, `climate_projection_record` |
 | pagina6 | `county_record`, `municipal_health_record` |
-| pagina7 / pagina8 | — (PDF estático) |
+| pagina7 / pagina8 | — (static PDF) |
 
-## Estrutura de um diretório de página
+## Page directory structure
 
 ```
 static/report/paginaN/
-├── index.html   # Template Jinja2 (ou file.pdf para página estática)
-├── styles.css   # CSS extraído do design (Penpot), sem @font-face próprio
-├── data.js      # window.PAGE_DATA: tokens de design e textos default
-└── imgs/        # Assets locais da página
+├── index.html   # Jinja2 template (or file.pdf for a static page)
+├── styles.css   # CSS extracted from the design (Penpot), no local @font-face
+├── data.js      # window.PAGE_DATA: design tokens and default texts
+└── imgs/        # Page-local assets
 ```
 
-Recursos compartilhados ficam em `static/report/shared/` (fontes em `shared/css/fonts.css`, imagens comuns, JS utilitário). Os designs de referência são exportados do Penpot; a cópia de trabalho fica em `local_data/src-atualizado/` antes de ser integrada ao backend.
+Shared resources live in `static/report/shared/` (fonts in `shared/css/fonts.css`, common images, utility JS). Reference designs are exported from Penpot; the working copy sits in `local_data/src-atualizado/` before being integrated into the backend.
 
-## Requisitos para adicionar uma nova página
+## Requirements for adding a new page
 
-1. Criar `static/report/paginaX/` com `index.html` (+ `styles.css`, `data.js`, `imgs/`) **ou** `file.pdf`.
-2. Registrar a página no enum `Settings.PageName` e em `pages_dir` na posição desejada.
-3. Declarar os registros usados em `page_context_records`.
-4. Se precisar de dado novo, seguir o fluxo descrito em [`01-architecture.md`](01-architecture.md#requisitos-para-novas-funcionalidades).
+1. Create `static/report/paginaX/` with `index.html` (+ `styles.css`, `data.js`, `imgs/`) **or** `file.pdf`.
+2. Register the page in the `Settings.PageName` enum and in `pages_dir` at the desired position.
+3. Declare the records it uses in `page_context_records`.
+4. If new data is needed, follow the flow described in [`01-architecture.md`](01-architecture.md#requirements-for-new-features).

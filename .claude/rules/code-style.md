@@ -1,24 +1,24 @@
-# Estilo de Código
+# Code Style
 
-## Idioma
-- **Todo código-fonte gerado deve ser em inglês**: nomes de variáveis, funções, classes, comentários, docstrings e mensagens de log.
-- Exceções (permanecem em português): textos exibidos ao usuário (UI do frontend e conteúdo do relatório PDF), termos de domínio vindos do banco (ex.: colunas `Ameaça`, `Capacidade adaptativa`) e a documentação interna (`.specs/`, `.claude/`).
+## Language
+- **All generated source code must be in English**: variable, function and class names, comments, docstrings and log messages.
+- **Exceptions (must remain in Brazilian Portuguese)**: user-facing texts and UI/UX content (frontend interface and PDF report content — titles, labels, unit suffixes), and domain terms coming from the database (e.g. columns `Ameaça`, `Capacidade adaptativa`).
 
 ## Python (backend)
-- Seguir a Clean Architecture existente: `domain/` não importa de `application/`, `infrastructure/` nem de FastAPI. Implementações concretas só entram via `application/dependencies.py`.
-- Entidades são modelos Pydantic com campos `Optional` e default `None`; cada agregado tem um wrapper `*Report` com `formatted_data_dict`.
-- Consultas SQL sempre parametrizadas (`$1`, `$2`…), somente `SELECT`, no schema `painel_municipal`.
-- Nomes: snake_case para funções/variáveis, PascalCase para classes, enums para constantes (`ErrorKeys`, `PdfEngineType`).
-- Novos erros: adicionar chave `ERR_*` em `core/constants.py`; nunca strings soltas de erro.
-- Logs de fluxo com `print` seguem o padrão existente (`--- mensagem ---`); não introduzir framework de logging sem decisão registrada em `.specs/`.
+- Follow the existing Clean Architecture: `domain/` does not import from `application/`, `infrastructure/` or FastAPI. Concrete implementations only enter through `application/dependencies.py`.
+- Entities are Pydantic models with `Optional` fields defaulting to `None`; each aggregate has a `*Report` wrapper with `formatted_data_dict`.
+- SQL queries are always parameterized (`$1`, `$2`…), `SELECT` only, against the `painel_municipal` schema.
+- Naming: snake_case for functions/variables, PascalCase for classes, enums for constants (`ErrorKeys`, `PdfEngineType`).
+- New errors: add an `ERR_*` key to `core/constants.py`; never loose error strings.
+- Flow logs with `print` follow the existing pattern (`--- message ---`); do not introduce a logging framework without a decision recorded in `.specs/`.
 
 ## Frontend (Vanilla JS)
-- Sem frameworks nem dependências de CDN.
-- Toda chamada à API usa a `API_BASE_URL` resolvida em `app.js`; nunca URL hardcoded no ponto de uso.
-- Textos de interface em português brasileiro.
+- No frameworks and no CDN dependencies.
+- Every API call uses the `API_BASE_URL` resolved in `app.js`; never a hardcoded URL at the call site.
+- Interface texts in Brazilian Portuguese.
 
-## Templates de relatório (`backend/src/static/report/`)
-- Dimensão fixa 842×595 px; nada pode transbordar o viewport.
-- CSS extraído do Penpot sem `@font-face` local (fontes em `shared/css/fonts.css`).
-- Dados dinâmicos chegam formatados via contexto Jinja2; o template não calcula nem formata valores.
-- Comentários no topo de `styles.css`/`data.js` indicam o board Penpot de origem — manter atualizados.
+## Report templates (`backend/src/static/report/`)
+- Fixed size 842×595 px; nothing may overflow the viewport.
+- CSS extracted from Penpot without local `@font-face` (fonts in `shared/css/fonts.css`).
+- Dynamic data arrives formatted via the Jinja2 context; the template neither calculates nor formats values.
+- Header comments in `styles.css`/`data.js` reference the source Penpot board — keep them up to date.

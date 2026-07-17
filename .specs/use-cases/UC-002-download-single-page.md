@@ -1,36 +1,36 @@
-# UC-002 — Baixar Página Individual do Relatório
+# UC-002 — Download a Single Report Page
 
-## Descrição
-Obter o PDF de uma única página da ficha municipal (ex.: só a capa ou só as projeções climáticas), sem gerar o relatório inteiro. Usado para depuração de layout, downloads parciais e composição por scripts (`scripts/download_reports_by_page*.sh`, `scripts/merge_pages_range.sh`).
+## Description
+Obtain the PDF of a single page of the municipal report card (e.g. only the cover or only the climate projections), without generating the whole report. Used for layout debugging, partial downloads and script-based composition (`scripts/download_reports_by_page*.sh`, `scripts/merge_pages_range.sh`).
 
-## Atores
-- **Primário**: Desenvolvedor/designer validando uma página; scripts de lote.
+## Actors
+- **Primary**: Developer/designer validating a page; batch scripts.
 
-## Pré-condições
-- `page_name` ∈ {`pagina0` … `pagina8`}, registrado em `settings.pages_dir` **e** `settings.page_context_records`.
-- Dados exigidos pela página existem para o `county_id`.
+## Preconditions
+- `page_name` ∈ {`pagina0` … `pagina8`}, registered in `settings.pages_dir` **and** `settings.page_context_records`.
+- The data required by the page exists for the `county_id`.
 
-## Gatilho
-`GET /api/v1/reports/pdf/{page_name}/{county_id}/` (nota: barra final obrigatória; `county_id > 0`).
+## Trigger
+`GET /api/v1/reports/pdf/{page_name}/{county_id}/` (note: trailing slash required; `county_id > 0`).
 
-## Fluxo principal
-1. Sistema valida rate limit (200/min por IP).
-2. Sistema valida `page_name` contra as páginas configuradas; inválido → `404 ERR_PAGE_NOT_FOUND`.
-3. Sistema consulta **apenas** os repositórios listados em `page_context_records[page_name]` (otimização: páginas estáticas não consultam quase nada).
-4. A projeção climática é consultada **sempre**, para obter o `geocode` que nomeia o arquivo.
-5. Sistema chama `generate_pdf_page(context, page_name)`:
-   - página estática → retorna o `file.pdf` reescalado;
-   - página HTML → renderiza somente aquele template.
-6. Resposta `200` com `application/pdf`, `filename="{geocode}.pdf"`.
+## Main flow
+1. System validates the rate limit (200/min per IP).
+2. System validates `page_name` against the configured pages; invalid → `404 ERR_PAGE_NOT_FOUND`.
+3. System queries **only** the repositories listed in `page_context_records[page_name]` (optimization: static pages query almost nothing).
+4. The climate projection is **always** queried, to obtain the `geocode` that names the file.
+5. System calls `generate_pdf_page(context, page_name)`:
+   - static page → returns the rescaled `file.pdf`;
+   - HTML page → renders only that template.
+6. Response `200` with `application/pdf`, `filename="{geocode}.pdf"`.
 
-## Fluxos alternativos / exceções
-- **A1 — Página desconhecida** (na validação ou `KeyError` do serviço): `404 ERR_PAGE_NOT_FOUND`.
-- **A2 — Dado obrigatório ausente**: `404` com a chave `ERR_*_NOT_FOUND` do conjunto faltante.
-- **A3 — Falha de renderização**: `500`.
+## Alternative flows / exceptions
+- **A1 — Unknown page** (validation or the service's `KeyError`): `404 ERR_PAGE_NOT_FOUND`.
+- **A2 — Missing required data**: `404` with the missing dataset's `ERR_*_NOT_FOUND` key.
+- **A3 — Rendering failure**: `500`.
 
-## Regras de negócio envolvidas
-- Mapa página→registros: ver [`../architecture/03-pdf-generation.md`](../architecture/03-pdf-generation.md#otimização-de-contexto-por-página).
+## Business rules involved
+- Page→records map: see [`../architecture/03-pdf-generation.md`](../architecture/03-pdf-generation.md#per-page-context-optimization).
 
-## Referências
+## References
 - `backend/src/application/router.py` (`download_report_page_pdf`)
 - `backend/src/core/config.py` (`page_context_records`)

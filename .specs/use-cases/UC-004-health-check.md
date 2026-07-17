@@ -1,27 +1,27 @@
-# UC-004 — Verificar Saúde do Serviço
+# UC-004 — Check Service Health
 
-## Descrição
-Expor um endpoint de diagnóstico para monitoramento e troubleshooting: status do backend, engine de PDF ativa, páginas configuradas, versão do projeto e conectividade do banco.
+## Description
+Expose a diagnostic endpoint for monitoring and troubleshooting: backend status, active PDF engine, configured pages, project version and database connectivity.
 
-## Atores
-- **Primário**: Operador/DevOps, monitoramento externo, desenvolvedor.
+## Actors
+- **Primary**: Operator/DevOps, external monitoring, developer.
 
-## Gatilho
+## Trigger
 `GET /api/v1/health`
 
-## Fluxo principal
-1. Sistema monta a resposta base: `{"backend": {"status": "ok", ...}}`.
-2. Adiciona `pdf_engine` (valor de `settings.pdf_engine`) e `pages_dir` (páginas configuradas).
-3. Tenta ler os metadados do projeto (`ProjectInfoService` → `pyproject.toml`: nome, versão, descrição) e agrega em `project`.
-4. Tenta abrir/fechar uma conexão com o banco (`test_connection`) e agrega `database_status: "connected" | "disconnected"`.
-5. Responde `200` sempre que o processo estiver de pé.
+## Main flow
+1. System builds the base response: `{"backend": {"status": "ok", ...}}`.
+2. Adds `pdf_engine` (value of `settings.pdf_engine`) and `pages_dir` (configured pages).
+3. Attempts to read the project metadata (`ProjectInfoService` → `pyproject.toml`: name, version, description) and aggregates it under `project`.
+4. Attempts to open/close a database connection (`test_connection`) and aggregates `database_status: "connected" | "disconnected"`.
+5. Responds `200` whenever the process is up.
 
-## Regras de negócio
-- **Resiliência**: falha em qualquer verificação parcial (metadados, banco) **não** derruba o endpoint — o erro é logado e o campo omitido/degradado. HTTP 200 indica apenas "processo vivo"; a saúde real do banco deve ser lida em `database_status`.
+## Business rules
+- **Resilience**: a failure in any partial check (metadata, database) **does not** bring the endpoint down — the error is logged and the field omitted/degraded. HTTP 200 only means "process alive"; the real database health must be read from `database_status`.
 
-## Requisitos de monitoramento
-- Sistemas de monitoramento devem alertar quando `database_status != "connected"`, mesmo com HTTP 200.
+## Monitoring requirements
+- Monitoring systems must alert when `database_status != "connected"`, even with HTTP 200.
 
-## Referências
+## References
 - `backend/src/application/router.py` (`health_check`)
 - `backend/src/infrastructure/project_info_service.py`

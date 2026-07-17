@@ -1,13 +1,13 @@
-# Especificação da API REST
+# REST API Specification
 
-Base path: **`/api/v1`** — definido em `backend/src/application/router.py`.
-Todos os endpoints são `GET`. CORS restrito às origens configuradas em `main.py`; verbos permitidos: `GET`, `OPTIONS`.
+Base path: **`/api/v1`** — defined in `backend/src/application/router.py`.
+All endpoints are `GET`. CORS restricted to the origins configured in `main.py`; allowed verbs: `GET`, `OPTIONS`.
 
 ## GET /api/v1/health
 
-Diagnóstico do serviço.
+Service diagnostics.
 
-**Resposta 200** (exemplo):
+**Response 200** (example):
 ```json
 {
   "backend": {"status": "ok", "message": "Service is running"},
@@ -18,49 +18,49 @@ Diagnóstico do serviço.
 }
 ```
 
-Regras:
-- Falha ao ler `pyproject.toml` ou ao testar o banco **não** derruba o endpoint; o campo correspondente é omitido ou marcado como `disconnected`.
+Rules:
+- A failure to read `pyproject.toml` or to test the database **does not** bring the endpoint down; the corresponding field is omitted or marked `disconnected`.
 
 ## GET /api/v1/counties
 
-Lista todos os municípios disponíveis.
+Lists all available municipalities.
 
-**Resposta 200**: `List[County]`
+**Response 200**: `List[County]`
 ```json
 [{"county_id": 1, "geocode": 3305158, "county": "São José do Vale do Rio Preto", "state": "RJ", "region": "Sudeste", "display": "São José do Vale do Rio Preto - RJ"}]
 ```
 
-Regras:
-- Ordenação por `display` (alfabética).
-- Erros de consulta → HTTP 500 com `ERR_DATA_RETRIEVAL_FAILED`.
+Rules:
+- Ordered by `display` (alphabetical).
+- Query errors → HTTP 500 with `ERR_DATA_RETRIEVAL_FAILED`.
 
 ## GET /api/v1/reports/pdf/{county_id}
 
-Gera o **relatório completo** (todas as páginas mescladas).
+Generates the **full report** (all pages merged).
 
-- **Rate limit**: 200 requisições/minuto por IP (HTTP 429 ao exceder).
-- **Parâmetro**: `county_id` (int).
-- **Resposta 200**: `application/pdf`, header `Content-Disposition: attachment; filename="{geocode}.pdf"` — o nome do arquivo é o **geocode IBGE** obtido da projeção climática (fallback: `county_{county_id}.pdf`).
-- **Erros**:
-  - 404 com chave específica quando qualquer conjunto de dados obrigatório não existe: `ERR_COUNTY_NOT_FOUND`, `ERR_RISK_FACTOR_NOT_FOUND`, `ERR_MUNICIPAL_REPORT_NOT_FOUND`, `ERR_MUNICIPAL_RESILIENCE_PROFILE_NOT_FOUND`, `ERR_CLIMATE_PROJECTION_NOT_FOUND`, `ERR_MUNICIPAL_HEALTH_NOT_FOUND`.
-  - 500 quando a geração do PDF falha (`ERR_PDF_GENERATION_FAILED` no log; `detail` carrega a mensagem da exceção).
+- **Rate limit**: 200 requests/minute per IP (HTTP 429 when exceeded).
+- **Parameter**: `county_id` (int).
+- **Response 200**: `application/pdf`, header `Content-Disposition: attachment; filename="{geocode}.pdf"` — the file name is the **IBGE geocode** taken from the climate projection (fallback: `county_{county_id}.pdf`).
+- **Errors**:
+  - 404 with a specific key when any required dataset is missing: `ERR_COUNTY_NOT_FOUND`, `ERR_RISK_FACTOR_NOT_FOUND`, `ERR_MUNICIPAL_REPORT_NOT_FOUND`, `ERR_MUNICIPAL_RESILIENCE_PROFILE_NOT_FOUND`, `ERR_CLIMATE_PROJECTION_NOT_FOUND`, `ERR_MUNICIPAL_HEALTH_NOT_FOUND`.
+  - 500 when PDF generation fails (`ERR_PDF_GENERATION_FAILED` in logs; `detail` carries the exception message).
 
 ## GET /api/v1/reports/pdf/{page_name}/{county_id}/
 
-Gera o PDF de **uma única página** do relatório.
+Generates the PDF of a **single report page**.
 
-- **Rate limit**: 200 requisições/minuto por IP.
-- **Parâmetros**: `page_name` (str — `pagina0`…`pagina8`), `county_id` (int, `gt=0`).
-- **Validação**: `page_name` deve existir em `settings.pages_dir` **e** em `settings.page_context_records`; caso contrário, 404 `ERR_PAGE_NOT_FOUND`.
-- **Busca de dados condicional**: consulta apenas os repositórios listados em `page_context_records[page_name]`. A projeção climática é sempre consultada (nome do arquivo).
-- **Resposta 200**: `application/pdf`, mesmo padrão de nome `{geocode}.pdf`.
-- **Erros**: 404 por dado ausente (mesmas chaves do endpoint completo) ou página inexistente; 500 em falha de geração.
+- **Rate limit**: 200 requests/minute per IP.
+- **Parameters**: `page_name` (str — `pagina0`…`pagina8`), `county_id` (int, `gt=0`).
+- **Validation**: `page_name` must exist in `settings.pages_dir` **and** in `settings.page_context_records`; otherwise 404 `ERR_PAGE_NOT_FOUND`.
+- **Conditional data fetching**: queries only the repositories listed in `page_context_records[page_name]`. The climate projection is always queried (file name).
+- **Response 200**: `application/pdf`, same `{geocode}.pdf` naming.
+- **Errors**: 404 for missing data (same keys as the full endpoint) or unknown page; 500 on generation failure.
 
-## Convenções de erro
+## Error conventions
 
-- Chaves de erro são estáveis e definidas em `ErrorKeys` (`backend/src/core/constants.py`), formato `ERR_SNAKE_CASE`. Clientes devem tratar pela chave, não pela mensagem.
-- Nunca expor stack trace ao cliente; logs detalhados ficam no stdout do backend.
+- Error keys are stable and defined in `ErrorKeys` (`backend/src/core/constants.py`), `ERR_SNAKE_CASE` format. Clients must handle the key, not the message.
+- Never expose stack traces to the client; detailed logs go to the backend stdout.
 
-## Compatibilidade
+## Compatibility
 
-- Mudanças de contrato exigem novo prefixo de versão (`/api/v2`); o prefixo `/api/v1` não deve sofrer breaking changes.
+- Contract changes require a new version prefix (`/api/v2`); the `/api/v1` prefix must not receive breaking changes.

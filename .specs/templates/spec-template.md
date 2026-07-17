@@ -1,35 +1,35 @@
-# [Título da Especificação]
+# [Specification Title]
 
-> Status: Rascunho | Em revisão | Aprovada
-> Última atualização: AAAA-MM-DD
+> Status: Draft | In review | Approved
+> Last updated: YYYY-MM-DD
 
-## Contexto e motivação
+## Context and motivation
 
-Por que esta especificação existe; qual problema resolve.
+Why this specification exists; which problem it solves.
 
-## Escopo
+## Scope
 
-O que está incluído e o que está explicitamente fora.
+What is included and what is explicitly out of scope.
 
-## Definições técnicas
+## Technical definitions
 
-Detalhamento da solução: componentes afetados, contratos, fluxos, estruturas de dados.
+Solution details: affected components, contracts, flows, data structures.
 
-## Regras de negócio
+## Business rules
 
-Lista numerada de regras verificáveis (uma regra por item, sem ambiguidade).
+Numbered list of verifiable rules (one rule per item, no ambiguity).
 
-## Impacto
+## Impact
 
-- Código afetado (caminhos relativos à raiz do repo)
-- Migrações/dados
-- API (breaking change? exige `/api/v2`?)
+- Affected code (paths relative to the repo root)
+- Migrations/data
+- API (breaking change? requires `/api/v2`?)
 
-## Critérios de aceitação
+## Acceptance criteria
 
-- [ ] Critério objetivo e testável 1
-- [ ] Critério objetivo e testável 2
+- [ ] Objective, testable criterion 1
+- [ ] Objective, testable criterion 2
 
-## Referências
+## References
 
-Links para código, issues, designs (Penpot) e outras specs.
+Links to code, issues, designs (Penpot) and other specs.

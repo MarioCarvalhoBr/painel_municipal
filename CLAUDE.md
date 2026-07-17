@@ -1,19 +1,19 @@
 # Folha Municipal — AdaptaBrasil (INPE)
 
-Gera fichas municipais em PDF com indicadores socioclimáticos. Especificações completas em `.specs/`.
+Generates municipal PDF report cards with socioclimatic indicators. Full specifications in `.specs/`.
 
 ## Stack
 - Backend: Python 3.12+, FastAPI, asyncpg (PostgreSQL, schema `painel_municipal`), Jinja2, Playwright, pypdf, Poetry.
-- Frontend: HTML/CSS/Vanilla JS servido por Nginx. Orquestração: Docker Compose (`make run`, `make logs-backend`).
+- Frontend: HTML/CSS/Vanilla JS served by Nginx. Orchestration: Docker Compose (`make run`, `make logs-backend`).
 
-## Arquitetura (Clean Architecture — `backend/src/`)
-- `domain/` (entidades + interfaces, sem framework) ← `application/` (router + DI) ← `infrastructure/` (DB, PDF).
-- Config centralizada em `core/config.py` (`.env` na raiz); erros padronizados em `core/constants.py` (`ERR_*`).
-- Templates do relatório em `static/report/paginaN/` (842×595 px; ordem das páginas em `settings.pages_dir`).
+## Architecture (Clean Architecture — `backend/src/`)
+- `domain/` (entities + interfaces, framework-free) ← `application/` (router + DI) ← `infrastructure/` (DB, PDF).
+- Config centralized in `core/config.py` (`.env` at repo root); standardized errors in `core/constants.py` (`ERR_*`).
+- Report templates in `static/report/paginaN/` (842×595 px; page order in `settings.pages_dir`).
 
-## Convenções
-- Todo código-fonte em **inglês** (identificadores, comentários, docstrings, logs); textos de UI/relatório em pt-BR.
-- Commits: inglês, com tags semânticas (`feat:`, `fix:`, `style:`, `docs:`, `chore:`).
-- Formatação numérica pt-BR só no domínio (`CommonBusinessRules`); valor ausente = `"—"`. Nunca formatar em JS/Jinja2.
-- API versionada em `/api/v1` — sem breaking changes; textos de UI em português brasileiro.
-- Regras detalhadas em `.claude/rules/`; versão do backend em `backend/pyproject.toml` (bump a cada release).
+## Conventions
+- All source code and documentation in **English**; user-facing texts and UI/UX content (frontend + PDF report) in Brazilian Portuguese.
+- Commits: English, with semantic tags (`feat:`, `fix:`, `style:`, `docs:`, `chore:`).
+- pt-BR number formatting only in the domain (`CommonBusinessRules`); missing value = `"—"`. Never format in JS/Jinja2.
+- API versioned at `/api/v1` — no breaking changes.
+- Detailed rules in `.claude/rules/`; backend version in `backend/pyproject.toml` (bump each release).
