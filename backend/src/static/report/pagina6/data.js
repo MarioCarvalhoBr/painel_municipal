@@ -120,7 +120,7 @@ window.PAGE_DATA = {
       },
       {
         "id": "despesas_saude",
-        "label": "Despesas em saúde :",
+        "label": "Despesas em saúde:",
         "valor": "R$5000/hab"
       }
     ]

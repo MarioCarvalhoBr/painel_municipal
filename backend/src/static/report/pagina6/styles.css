@@ -261,11 +261,11 @@ body {
 .valor-90934337d73c .root-0-paragraph-set-0-paragraph-0-text-0 {
   color: rgba(30, 30, 30, 1);
   text-transform: none;
-  
+
   line-break: auto;
   overflow-wrap: initial;
   white-space: break-spaces;
-  font-size: 10px;
+  font-size: 12px;
   text-rendering: geometricPrecision;
   caret-color: rgba(30, 30, 30, 1);
   text-decoration: none;
@@ -1553,7 +1553,7 @@ body {
   mix-blend-mode: normal;
 }
 
-/* Despesas em saúde : */
+/* Despesas em saúde: */
 .despesas-e-15a94b6a3566 {
   position: absolute;
   left: 20.01px;
@@ -1611,7 +1611,7 @@ body {
   font-weight: 400;
 }
 
-/* Despesas em saúde : */
+/* Despesas em saúde: */
 .despesas-e-b767c7fcc2cc {
   position: absolute;
   left: 0px;

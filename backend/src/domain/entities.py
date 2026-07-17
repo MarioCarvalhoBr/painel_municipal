@@ -45,6 +45,23 @@ class CommonBusinessRules(BaseModel):
         return "—"
 
     @staticmethod
+    def brazilian_formatted_integer_with_unit(value: Optional[float | int], unit: str) -> Optional[str]:
+        """
+        Format an integer count followed by a unit suffix.
+
+        A value that truncates to zero collapses to a bare "0" (no unit suffix),
+        so rates such as "0 por 100 mil hab" are shown simply as "0".
+        None: '—'
+        """
+        if value is None:
+            return "—"
+
+        truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=2)
+        if truncated_value == 0:
+            return "0"
+        return f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} {unit}"
+
+    @staticmethod
     def brazilian_formatted_value_currency_short(value: Optional[float | int]) -> Optional[str]:
         """
         Format a monetary value in short scale (Mi/Bi) with Brazilian conventions.
@@ -499,11 +516,13 @@ class MunicipalHealthReport(BaseModel):
                 data[key] = "—"
                 continue
 
-            if key in ["incid_arbo_2025", "incid_lepto_2025", "incid_hepatitea_2023", "intern_dda_2025",
+            if key in ["incid_arbo_2025", "incid_lepto_2025", "incid_hepatitea_2023",
                        "inter_doenc_circ_2025", "intern_doenc_resp_2025"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "por 100 mil hab")
+            elif key == "intern_dda_2025":
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} por 100 mil hab"
             elif key in ["leitos_1000_hab", "prof_saude_hab_2025", "medicos_hab_2025"]:
-                data[key] = f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} para cada mil hab"
+                data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "para cada mil hab")
             elif key == "despesas_saude":
                 data[key] = f"R${CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}/hab"
             elif key in ["cob_vac_menor_2", "cob_vac_influenza"]:
