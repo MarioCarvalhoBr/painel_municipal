@@ -302,14 +302,13 @@ class ClimateProjection(BaseModel):
     temp_med_otim: Optional[float] = None
     temp_med_pes: Optional[float] = None
 
-
     temp_max: Optional[float] = None
     temp_max_tend: Optional[float] = None
     temp_max_otim: Optional[float] = None
     temp_max_pes: Optional[float] = None
 
-    temp_min_otim: Optional[float] = None
     temp_min: Optional[float] = None
+    temp_min_otim: Optional[float] = None
     temp_min_tend: Optional[float] = None
     temp_min_pes: Optional[float] = None
     
@@ -318,15 +317,13 @@ class ClimateProjection(BaseModel):
     dias_secos_otim: Optional[float] = None
     dias_secos_pes: Optional[float] = None
 
-
     dias_chuva: Optional[float] = None
     dias_chuva_tend: Optional[float] = None
     dias_chuva_otim: Optional[float] = None
     dias_chuva_pes: Optional[float] = None
 
-    
-    chuva_ext_pes: Optional[float] = None
     chuva_ext: Optional[float] = None
+    chuva_ext_pes: Optional[float] = None
     chuva_ext_tend: Optional[float] = None
     chuva_ext_otim: Optional[float] = None
 
@@ -339,6 +336,10 @@ class ClimateProjection(BaseModel):
     nivel_mar_tend: Optional[float] = None
     nivel_mar_30: Optional[float] = None
     nivel_mar_50: Optional[float] = None
+    
+    # Correção 
+    nivel_mar_otim: Optional[float] = None
+    nivel_mar_pes: Optional[float] = None
     
 class ClimateProjectionReport(BaseModel):
     climate_projection: ClimateProjection
@@ -356,7 +357,7 @@ class ClimateProjectionReport(BaseModel):
                 continue
 
             # Scenario columns (tendência observada, otimista, pessimista) carry an explicit sign
-            if key.endswith(("_tend", "_otim", "_pes")):
+            if key.endswith(("_tend", "_otim", "_pes", "_30", "_50")):
                 formatted_value = CommonBusinessRules.brazilian_formatted_signed_value(value)
             else:
                 formatted_value = CommonBusinessRules.brazilian_formatted_value(value)
@@ -371,8 +372,16 @@ class ClimateProjectionReport(BaseModel):
             elif key in ["chuva_ext", "chuva_ext_tend", "chuva_ext_otim", "chuva_ext_pes",
                          "precip", "precip_tend", "precip_otim", "precip_pes"]:
                 data[key] = f"{formatted_value} mm"
-            elif key in ["nivel_mar", "nivel_mar_tend", "nivel_mar_30", "nivel_mar_50"]:
-                data[key] = f"{formatted_value} mm"
+            
+            elif key in ["nivel_mar", "nivel_mar_tend"]:
+                data[key] = f"{formatted_value} cm"
+                
+            elif key in ["nivel_mar_30"]:
+                data["nivel_mar_otim"] = f"{formatted_value} cm"
+                data[key] = f"{formatted_value} cm"
+            elif key in ["nivel_mar_50"]:
+                data["nivel_mar_pes"] = f"{formatted_value} cm"
+                data[key] = f"{formatted_value} cm"
 
         return data
 
