@@ -226,8 +226,8 @@ class MunicipalIndicators(BaseModel):
     acesso_lixo: Optional[float] = None
     
     # MOBILIDADE POPULATION
-    imig_regist: Optional[float] = None
-    solic_refugio: Optional[float] = None
+    imig_regist: Optional[int] = None
+    solic_refugio: Optional[int] = None
     imigrantes: Optional[float] = None
     tx_turismo: Optional[float] = None
     
@@ -279,9 +279,9 @@ class MunicipalIndicatorsReport(BaseModel):
                 else:
                     data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value, precision=3)} (Baixo)"
             
-            elif key in ["imig_regist"]:
-                data[key] = CommonBusinessRules.brazilian_formatted_value(value)
-            elif key in ["solic_refugio", "imigrantes", "tx_turismo"]:
+            elif key in ["imig_regist", "solic_refugio"]:
+                data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
+            elif key in ["imigrantes", "tx_turismo"]:
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value(value)}%"
             
             
