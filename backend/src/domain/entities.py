@@ -356,6 +356,15 @@ class ClimateProjectionReport(BaseModel):
                 data[key] = "—"
                 continue
 
+            # Skip text fields and values already formatted by earlier keys
+            # (nivel_mar_otim/_pes are filled from the _30/_50 branches below)
+            if isinstance(value, str):
+                continue
+
+            # Sea level values are stored in meters; convert to centimeters for display
+            if key.startswith("nivel_mar"):
+                value = float(Decimal(str(value)) * 100)
+
             # Scenario columns (tendência observada, otimista, pessimista) carry an explicit sign
             if key.endswith(("_tend", "_otim", "_pes", "_30", "_50")):
                 formatted_value = CommonBusinessRules.brazilian_formatted_signed_value(value)
