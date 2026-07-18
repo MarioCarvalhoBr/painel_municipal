@@ -525,6 +525,7 @@ class MunicipalHealthReport(BaseModel):
             elif key == "intern_dda_2025":
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} por 100 mil hab"
             elif key in ["leitos_1000_hab", "prof_saude_hab_2025", "medicos_hab_2025"]:
+                # TODO 1: Tratar como float e colocar 2 casas decimais, mas com a formatação brasileira (vírgula)
                 data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "para cada mil hab")
             elif key == "despesas_saude":
                 data[key] = f"R${CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}/hab"
