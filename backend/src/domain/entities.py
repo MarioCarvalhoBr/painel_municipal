@@ -505,6 +505,9 @@ class MunicipalHealth(BaseModel):
     cob_vac_menor_2: Optional[float] = None
     cob_vac_influenza_novo: Optional[float] = None
 
+    # External link to the clima.saude.gov.br municipal panel (clima_saude_links table)
+    clima_saude_url: Optional[str] = None
+
 class MunicipalHealthReport(BaseModel):
     municipal_health: MunicipalHealth
     
