@@ -56,7 +56,7 @@ Final format: `0,754 (Alto)`.
 
 ### Municipal health (pagina6)
 - Incidences and hospitalizations (`incid_*`, `intern_*`, `inter_*`) → `{integer} por 100 mil hab`
-- `leitos_1000_hab`, `prof_saude_hab_2025`, `medicos_hab_2025` → `{integer} para cada mil hab`
+- `leitos_1000_hab`, `prof_saude_hab_2025`, `medicos_hab_2025` → `{value with 2 decimal places} para cada mil hab` (float; values that truncate to zero collapse to a bare `0`)
 - `despesas_saude` → `R${value}/hab`
 - Vaccine coverage (`cob_vac_menor_2`, `cob_vac_influenza_novo`) → `{value}%`
 - `cob_vac_geral`: may arrive as a **string in Brazilian format** (`"1.234,5"`); it must be normalized (strip thousands `.`, replace `,` with `.`) before formatting; if conversion fails, display the original value.

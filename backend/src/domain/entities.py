@@ -62,6 +62,23 @@ class CommonBusinessRules(BaseModel):
         return f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} {unit}"
 
     @staticmethod
+    def brazilian_formatted_value_with_unit(value: Optional[float | int], unit: str) -> Optional[str]:
+        """
+        Format a value with 2 decimal places followed by a unit suffix.
+
+        A value that truncates to zero collapses to a bare "0" (no unit suffix),
+        mirroring brazilian_formatted_integer_with_unit.
+        None: '—'
+        """
+        if value is None:
+            return "—"
+
+        truncated_value = NumberFormattingProcessing.to_decimal_truncated(value, value_to_ignore=None, precision=2)
+        if truncated_value == 0:
+            return "0"
+        return f"{CommonBusinessRules.brazilian_formatted_value(value)} {unit}"
+
+    @staticmethod
     def brazilian_formatted_value_currency_short(value: Optional[float | int]) -> Optional[str]:
         """
         Format a monetary value in short scale (Mi/Bi) with Brazilian conventions.
@@ -427,7 +444,6 @@ class MunicipalResilienceProfile(BaseModel):
     agropec: Optional[float] = None
     ucs: Optional[str] = None
     ti: Optional[str] = None
-    # TODO: Missing fields for : Uso e cobertura da terra
     
     # gestão municipal
     plano_saneam: Optional[str] = None
@@ -454,8 +470,6 @@ class MunicipalResilienceProfile(BaseModel):
     eventos_geohidro: Optional[float] = None
     pessoas_area_risco_cemaden: Optional[float] = None
     
-    # TODO: Missing fields for : Áreas de risco
-
 class MunicipalResilienceProfileReport(BaseModel):
     municipal_resilience_profile: MunicipalResilienceProfile
     
@@ -495,9 +509,9 @@ class MunicipalHealth(BaseModel):
     inter_doenc_circ_2025: Optional[int] = None
     intern_doenc_resp_2025: Optional[int] = None
     
-    leitos_1000_hab: Optional[int] = None
-    prof_saude_hab_2025: Optional[int] = None
-    medicos_hab_2025: Optional[int] = None
+    leitos_1000_hab: Optional[float] = None
+    prof_saude_hab_2025: Optional[float] = None
+    medicos_hab_2025: Optional[float] = None
     
     despesas_saude: Optional[float] = None
     
@@ -525,8 +539,7 @@ class MunicipalHealthReport(BaseModel):
             elif key == "intern_dda_2025":
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} por 100 mil hab"
             elif key in ["leitos_1000_hab", "prof_saude_hab_2025", "medicos_hab_2025"]:
-                # TODO 1: Tratar como float e colocar 2 casas decimais, mas com a formatação brasileira (vírgula)
-                data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "para cada mil hab")
+                data[key] = CommonBusinessRules.brazilian_formatted_value_with_unit(value, "para cada mil hab")
             elif key == "despesas_saude":
                 data[key] = f"R${CommonBusinessRules.brazilian_formatted_value_ignore_two_zeros(value)}/hab"
             elif key in ["cob_vac_menor_2", "cob_vac_influenza_novo"]:
