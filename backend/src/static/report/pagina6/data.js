@@ -90,12 +90,12 @@ window.PAGE_DATA = {
       {
         "id": "upa_26",
         "label": "UPA:",
-        "valor": "2 por hab"
+        "valor": "2"
       },
       {
         "id": "caps_26",
         "label": "Centro de atenção psicossocial:",
-        "valor": "3 Caps"
+        "valor": "3"
       },
       {
         "id": "cer_26",

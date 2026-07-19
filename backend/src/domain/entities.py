@@ -557,14 +557,12 @@ class MunicipalHealthReport(BaseModel):
                 data[key] = f"{CommonBusinessRules.brazilian_formatted_value_integer(value)} por 100 mil hab"
             elif key in ["leitos_1000_hab", "prof_saude_hab_2025", "medicos_hab_2025"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value_with_unit(value, "para cada mil hab")
-            elif key in ["atendem_ao_sus", "nao_atendem_ao_sus", "upa_26", "cer_26",
-                         "e_multi_2026", "saude_bucal_26"]:
+            elif key in ["atendem_ao_sus", "nao_atendem_ao_sus", "upa_26", "caps_26",
+                         "cer_26", "e_multi_2026", "saude_bucal_26"]:
                 data[key] = CommonBusinessRules.brazilian_formatted_value_integer(value)
             elif key in ["hospitais", "centro_saude"]:
                 # Counts stored as text in the database; "-" marks a missing value
                 data[key] = "—" if str(value).strip() in ("-", "") else str(value)
-            elif key == "caps_26":
-                data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "Caps")
             elif key == "pas_26":
                 data[key] = CommonBusinessRules.brazilian_formatted_integer_with_unit(value, "polos")
             elif key == "pfpb_26":
