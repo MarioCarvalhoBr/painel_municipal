@@ -165,7 +165,7 @@ window.PAGE_DATA = {
     "itens": [
       {
         "id": "cob_vac_geral",
-        "label": "Geral:"
+        "label": "Geral \nCovid:"
       },
       {
         "id": "cob_vac_menor_2",
